@@ -80,4 +80,78 @@ http://example.com/page?name=</script><img src=x onerror=alert(1)>
 
 ---
 
-필요하다면 URL 구조나 삽입 위치 추측할 수 있는 부분 보여줘. 내가 공격 경로랑 페이로드 더 구체적으로 짜줄게.
+HTML 파서(브라우저의 DOM 해석기)의 동작 방식
+
+---
+
+## 🔥 요점 먼저
+
+* ✅ `</script><script>alert(1)</script>`는 **기존 `<script>` 태그를 종료**하고 새로운 `<script>`를 열기 때문에 **JS가 실행됨**
+* ❌ `<script>alert(1)</script>`는 브라우저가 **중첩된 `<script>`로 보지 않고**, 그냥 **문자열로 처리**하거나 **필터링**하기 때문에 실행되지 않음
+
+---
+
+## 🔍 HTML 안에 `<script>`를 넣으면 생기는 일
+
+### 예를 들어 이런 코드가 있다고 하자:
+
+```html
+<script>
+  var name = "[사용자 입력]";
+</script>
+```
+
+### Case 1: 입력값에 `<script>alert(1)</script>`를 넣은 경우
+
+```html
+<script>
+  var name = "<script>alert(1)</script>";
+</script>
+```
+
+#### 결과:
+
+* 브라우저는 이걸 **문자열 안의 HTML**로 봐.
+* 즉, 그냥 `var name = "<script>alert(1)</script>";` 이렇게 실행될 뿐이야.
+* 자바스크립트 구문상 문제가 없기 때문에 **alert는 실행되지 않음** (그냥 변수에 저장됐을 뿐)
+
+---
+
+### Case 2: 입력값에 `</script><script>alert(1)</script>`를 넣은 경우
+
+```html
+<script>
+  var name = "</script><script>alert(1)</script>";
+</script>
+```
+
+#### 결과:
+
+1. 첫 번째 `</script>`가 **기존 `<script>`를 닫아버림**
+2. 그 다음 `<script>alert(1)</script>`는 **완전히 새로운 스크립트 블록**이 됨
+3. 브라우저는 이걸 진짜 자바스크립트로 해석하고 `alert(1)` 실행
+
+📌 이게 바로 XSS 페이로드에서 `</script>`를 앞에 붙이는 이유야!
+
+---
+
+## ✅ 정리: 왜 앞에 `</script>`를 붙이면 되나?
+
+| 입력값                                  | 브라우저 동작                                     | 실행 여부 |
+| ------------------------------------ | ------------------------------------------- | ----- |
+| `<script>alert(1)</script>`          | `<script>` 안에 또 `<script>` → 무시되거나 문자열로 처리됨 | ❌     |
+| `</script><script>alert(1)</script>` | 기존 스크립트 닫힘 → 새 스크립트 열림 → 코드 실행됨             | ✅     |
+
+---
+
+## 🔐 참고
+
+이건 실제 공격에서도 자주 쓰이는 기법이야. 특히 HTML 안에 삽입되는 경우엔 다음 같은 형태로 변형됨:
+
+```html
+<script>var user = "[[INPUT_HERE]]";</script>
+```
+
+여기에서 `[[INPUT_HERE]]` 자리에 `</script><script>/*payload*/</script>`를 넣으면 바로 XSS가 되는 거지.
+
+---
