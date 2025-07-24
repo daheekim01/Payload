@@ -81,6 +81,109 @@ console.log("onchange: " + userInput);
 * `eval()`이나 `new Function()` 사용 → 매우 위험
 * `onchange`, `oncomplete`가 사용자 제어를 받는다면 → 조작 가능성 있음
 
+* 좋아, 아주 좋은 질문이고 예리한 시도야.
+보자:
+
+```js
+document.getElementById('userId').setAttribute('onchange', passwd);
+```
+
+---
+
+## 🔍 이 코드가 실제로 하는 일
+
+이 코드는 자바스크립트에서 다음을 시도하는 거야:
+
+* `document.getElementById('userId')`: `id="userId"`인 HTML 요소를 찾고
+* `.setAttribute('onchange', passwd)`: 그 요소에 `"onchange"`라는 **HTML 속성**을 설정하는데
+  그 값으로는 `passwd`라는 **변수의 값**을 넣어줌
+
+---
+
+## 🤔 그런데 `passwd`가 뭐냐에 따라 결과가 완전히 달라져
+
+### 📌 1. `passwd`가 `<input>` 요소라면:
+
+```js
+let passwd = document.getElementById('passwd');
+```
+
+그럼 이 코드는 다음처럼 해석돼:
+
+```js
+document.getElementById('userId').setAttribute('onchange', [object HTMLInputElement]);
+```
+
+즉, 최종적으로 이렇게 됨:
+
+```html
+<input id="userId" onchange="[object HTMLInputElement]">
+```
+
+> 🚫 아무 일도 안 일어나. 그냥 무효한 문자열일 뿐
+
+---
+
+### 📌 2. `passwd`가 어떤 값의 문자열이라면:
+
+```js
+let passwd = 'alert(1)';
+```
+
+그럼 이건 다음처럼 작동해:
+
+```html
+<input id="userId" onchange="alert(1)">
+```
+
+➡️ 이 상태에서 `userId` 필드에서 **포커스를 잃으면 `alert(1)`이 실행됨**
+✅ **이건 XSS 가능성 있음**
+
+---
+
+## 🚨 핵심: `setAttribute('onchange', someValue)`는 실제로 **HTML 속성처럼 등록**하지만, 그 값은 문자열로 변환됨
+
+그래서 `passwd`가:
+
+* 단순 문자열이면 → 실행 가능 (예: `"alert(1)"`)
+* DOM 객체면 → 그냥 `"object HTMLInputElement"` 같은 무쓸모 텍스트가 들어감
+* 함수면 → `passwd.toString()` 결과가 들어가는데 실행되진 않음
+
+---
+
+## ✅ 활용 예 (XSS 컨텍스트에서)
+
+### 💣 공격자가 이런 걸 조작할 수 있을 때:
+
+```js
+el.setAttribute('onchange', userInput);
+```
+
+그리고 `userInput` 값이:
+
+```html
+alert('XSS')
+```
+
+그럼 브라우저는:
+
+```html
+<input onchange="alert('XSS')">
+```
+
+이 되니까, onchange 발생 시 **XSS가 실행됨**
+
+---
+
+## 🧠 정리
+
+| 코드                                                  | 의미                                 | 실행 가능성 |
+| --------------------------------------------------- | ---------------------------------- | ------ |
+| `setAttribute('onchange', passwd)` (passwd가 DOM 객체) | `"[object HTMLInputElement]"`로 설정됨 | ❌      |
+| `setAttribute('onchange', 'alert(1)')`              | `"onchange"` 이벤트로 alert 설정됨        | ✅      |
+| \`setAttribute('onchange                            |                                    |        |
+
+
 ---
 
 ## 🎯 실전 팁 (CTF에서 자주 나옴)
