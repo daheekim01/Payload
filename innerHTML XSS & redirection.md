@@ -48,27 +48,3 @@ document.getElementById("output").textContent = userInput; // 안전
 
 ---
 
-### ✅ 리다이렉션 취약점이 되려면?
-
-**사용자 입력**(예: `?next=` 파라미터 등)을 통해
-**원하지 않는 외부 URL로 이동할 수 있어야** 합니다.
-
-### 예시 (취약):
-
-```js
-// 사용자 입력에 따라 외부로 이동
-const redirect = new URLSearchParams(window.location.search).get("next");
-window.location.href = redirect;
-```
-
-* `https://example.com/login?next=https://evil.com`
-  → 사용자 클릭 시 악성 사이트로 이동
-
-
-
-
-
-| 상황                                   | 리다이렉션 취약점인가?      |
-| ------------------------------------ | ----------------- |
-| 콘솔에서 `href = "https://naver.com"` 입력 | ❌ 아님 – 브라우저 정상 기능 |
-| 서버나                                  |                   |
