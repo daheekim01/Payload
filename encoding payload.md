@@ -45,6 +45,9 @@
 ```
 
 📌 SVG는 `<script>`가 막혀도 우회가 가능하며, 이미지처럼 삽입되기 때문에 필터를 우회하기 쉽습니다.
+```
+`"><svg/onload=alert(1)>` 등 다양
+```
 
 ---
 
@@ -140,5 +143,27 @@
 | **HTTP Parameter Pollution** | ❌         | `?id=123&id=456` 처럼 중복 파라미터     |
 | **Header Injection**         | ❌         | 응답 헤더 조작 (`\r\n` 삽입)            |
 | **JSON 기반 XSS**              | ✅ 또는 ❌    | JSON 응답에 JavaScript 형태로 값 삽입 가능 |
+
+---
+
+### 참고. 💣 **Command Injection**
+
+#### 📌 공격 방식
+
+```bash
+someinput; rm -rf /
+```
+
+* 서버에서 입력값을 OS 명령어에 직접 넘길 때
+
+```python
+os.system("ping " + user_input)
+```
+
+#### 🛡️ 방어법
+
+* OS 명령어 사용 시 **입력값을 절대 직접 연결하지 않기**
+* `subprocess.run` 등에서 `shell=False` 사용
+* allowlist로 명령어 파라미터 제한
 
 ---
