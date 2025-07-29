@@ -121,7 +121,9 @@
 ```html
 <a href="javascript:alert(1)">Click</a>
 ```
-
+```
+jav%0aascrip%0at:alert(1)
+```
 
 ## ✅ 필터 우회 팁
 
