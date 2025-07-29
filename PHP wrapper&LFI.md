@@ -1,3 +1,7 @@
+```
+코드(Code) 인젝션서버의 PHP 코드 실행 과정에 공격자의 코드를 삽입시키는 위협으로 가장 많은 공격은 서버에서 수행 코드를 내포시키는 include(), include_once(), require(), require_once() 함수들을 대상으로 해서 자신의 코드가 실행 과정에 반영되도록 하는 것입니다. include ($_GET['id'].".php");위의 사례처럼 웹 입력 자료를 기반으로 이들 함수를 사용한다면 철저한 사전 검사를 해야 합니다. 또다른 코드 인젝션의 위험성은 eval() 함수 사용입니다. eval() 함수로 PHP 코드를 문자열로 전달하면 그대로 수행하기 때문에 eval() 함수 파라미터가 혹여라도 웹 입력과 연관성이 있다면 철저한 사전 검사를 반드시 수행해야 합니다.
+```
+
 ### **LFI (Local File Inclusion) 취약점이란?**
 
 **LFI (Local File Inclusion)** 취약점은 웹 애플리케이션이 사용자가 입력한 값을 처리할 때, 그 입력값을 **파일 경로로 해석**하여 서버의 파일을 읽도록 할 수 있는 취약점입니다. 주로 **PHP**에서 발생하며, 공격자는 서버의 로컬 파일을 포함시켜서 **비밀번호 파일**, **구성 파일**, 또는 심지어 **시스템 파일**에 접근할 수 있게 됩니다.
@@ -67,7 +71,6 @@ http://example.com/vulnerable.php?page=data://text/plain;base64,PD9waHAgZWNobyAn
 ```
 
 * `data://` 프로토콜과 Base64 인코딩을 이용하여 PHP 코드를 직접 포함할 수 있습니다. 위 예시에서 `PD9waHAgZWNobyAnSGVsbG8gd29ybGQnOyBmaW5hbCgpOyA/Pg==`는 `<?php echo 'Hello world'; ?>`라는 PHP 코드를 Base64로 인코딩한 것입니다.
-
 
 ---
 
