@@ -225,3 +225,9 @@ http://example.com/vulnerable.php?code=system('ls -la'); // 서버 명령어 실
 ```
 
 이 코드는 `system('ls -la')` 명령을 실행하여 서버의 파일 목록을 출력합니다. 이처럼 `eval()`을 악용하면 **서버 명령어 실행**을 통해 공격자가 서버를 제어할 수 있습니다.
+
+```
+GET /api.php?file=example.txt;rm%20-rf%20/
+```
+
+위의 요청은 파일 이름을 전달하는 API에서 쉘 명령어를 주입하여 파일 삭제나 시스템 명령어 실행을 유도할 수 있습니다.
