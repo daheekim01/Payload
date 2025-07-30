@@ -40,7 +40,7 @@ X-Forwarded-Host: attacker.com
 
 ### 3. **XSS (Cross-Site Scripting) 공격을 위한 `Referer` 헤더 악용**
 
-`Referer` 헤더는 현재 요청이 어디서 왔는지에 대한 정보를 담고 있습니다. 이를 통해 공격자는 `Referer` 헤더에 악성 스크립트를 삽입하여 **Cross-Site Scripting** (XSS) 공격을 시도할 수 있습니다.
+`Referer` 헤더는 현재 요청이 어디서 왔는지, 즉 이전 페이지에 대한 정보를 담고 있습니다. 이를 통해 공격자는 `Referer` 헤더에 악성 스크립트를 삽입하여 **Cross-Site Scripting** (XSS) 공격을 시도할 수 있습니다.
 
 #### 공격 기법:
 
