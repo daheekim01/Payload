@@ -95,7 +95,24 @@
 %3Cdiv%20onmouseover%3Dalert(1)%3EXSS%3C%2Fdiv%3E
 ```
 
-📌 유저가 마우스를 올려야 실행되므로 일부 제한적이지만, 필터를 우회할 수 있음.
+
+### 6. 
+```html
+<!-- 브라우저 주소창이 https://www.example.com/page -->
+<script>
+  console.log(document.domain); // "example.com"
+</script>
+```
+
+* 위 코드를 실행하면 콘솔에 `example.com`이 출력됩니다.
+ 공격자가 `alert(document.domain)`을 넣는 이유는 단순히 **XSS 성공 여부를 확인**하려는 것.
+   → 공격이 성공하면, 페이지에서 현재 도메인(`example.com` 등)이 alert로 뜸.
+
+```javascript
+// 구글에서 실행해보면
+document.domain
+// 출력: "google.com"
+
 
 
 ## 🧪 공격자들이 흔히 쓰는 XSS 우회 기법 예시
