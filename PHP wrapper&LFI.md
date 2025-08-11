@@ -140,6 +140,58 @@ http://example.com/vulnerable.php?page=data:text/plain;base64,SGVsbG8gd29ybGQ=
 
 위 URL에서 `SGVsbG8gd29ybGQ=`는 "Hello world"를 Base64로 인코딩한 값입니다. 이는 PHP 코드로 실행될 수 있는 형식으로 변환될 수 있습니다.
 
+
+---
+
+
+**Laravel 프레임워크를 타겟으로 한 고전적인 로컬 파일 읽기(Local File Inclusion, LFI)** 및 **PHP 스트림 래퍼 우회 공격 시도**
+
+### 1. `/_ignition/execute-solution`
+
+* Laravel Debugbar 또는 Ignition 디버거에 의해 노출된 **디버그 툴 엔드포인트**
+* 개발 환경에서 활성화됨 (`APP_DEBUG=true`)
+* 의도: 문제 해결 솔루션을 실행하거나 내부 상태를 진단
+* 공격자 입장에서는 **LFI, RCE, SSRF 등 다양한 취약점 탐색 포인트**
+
+### 2. `php://filter`
+
+* PHP의 **스트림 래퍼(stream wrapper)** 중 하나
+* `php://filter/read=convert.base64-encode/resource=<file>` 같은 형식으로 사용됨
+* 목적: **로컬 파일을 base64로 인코딩해서 노출**
+* 예:
+
+  ```php
+  file_get_contents("php://filter/read=convert.base64-encode/resource=/etc/passwd")
+  ```
+
+### 3. `php://filter/read=consumed/resource=...`
+
+* 이건 우회 시도입니다.
+* `read=consumed` 는 유효하지 않은 옵션이지만, **WAF나 로그 필터링 우회를 위한 패턴일 수 있음**
+* 진짜 의도는 `php://filter/read=convert.base64-encode/resource=../storage/logs/laravel.log` 같은 요청일 수 있어요.
+
+
+공격자는 Laravel 로그 파일을 읽어서:
+
+1. `APP_KEY`, `DB_PASSWORD`, `API 토큰` 등 민감한 정보 추출
+2. 에러 메시지나 스택 트레이스 통해 **경로, 구성 정보 파악**
+3. 다음 단계 공격 (예: deserialization + RCE 등) 준비
+---
+
+## 🚫 차단할 수 있는 요청 패턴 예
+
+* 경로:
+
+  * `/_ignition/execute-solution`
+  * `/vendor/phpunit/`
+  * `/storage/logs/`
+* 내용:
+
+  * `php://filter`
+  * `read=convert.base64-encode`
+  * `laravel.log`
+
+
 ---
 
 ### **코드 인젝션 (Code Injection) 취약점**
