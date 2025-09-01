@@ -127,10 +127,3 @@
 * [제로다크웹 원문 블로그 보기](https://www.zerodarkweb.kr/credential-leaked-combo-infostealer-%ED%95%B4%EC%BB%A4%EB%93%A4%EC%9D%B4-%EC%A0%95%EB%B3%B4%EB%A5%BC-%EC%88%98%EC%A7%91%ED%95%98%EB%8A%94-%EB%AF%B8%EB%AC%98%ED%95%9C-%EA%B8%B0%EC%88%A0%EB%93%A4/)
 * [SpyCloud – Infostealer 연구](https://spycloud.com/blog/the-new-age-of-combolists)
 * [Stealthmole – Combo List 분석](https://www.stealthmole.com/blog/combo-lists-the-criminals-key-for-cyber-attacks)
-
-
-* RedLine / Raccoon 등 주요 Infostealer 악성코드 상세 분석
-* Combo 리스트 샘플 구조
-* Credential Stuffing 자동화 도구 설명
-
-등도 제공해드릴 수 있습니다. 원하시면 말씀해주세요.
