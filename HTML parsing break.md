@@ -11,7 +11,8 @@ http://example.com/page?name=</script><script>alert(1)</script>
 
 서버가 사용자 입력을 그대로 `<script>` 태그 안에 넣으면,
 
-```html
+```
+html
 <script>
     var name = "<사용자 입력값>";  // 이 줄에 XSS 코드가 들어가면 파싱이 깨짐
 </script>
