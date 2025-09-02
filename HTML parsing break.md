@@ -1,10 +1,9 @@
 ## (1)
-## URL 뒤에 `<script></script>`를 붙이니까 페이지의 원래 HTML `<script>` 태그 일부가 화면에 노출됨
+>URL 뒤에 `<script></script>`를 붙이니까 페이지의 원래 HTML `<script>` 태그 일부가 화면에 노출됨
 > 페이지 내의 기존 스크립트 일부가 "깨져서" 화면에 나타남
 
----
 
-## 🔍삽입한 태그 때문에 브라우저가 DOM을 비정상적으로 파싱하고, 기존 `<script>` 블록이 종료되거나 망가져서 일부 코드가 **화면에 렌더링**
+* 🔍삽입한 태그 때문에 브라우저가 DOM을 비정상적으로 파싱하고, 기존 `<script>` 블록이 종료되거나 망가져서 일부 코드가 **화면에 렌더링**
 
 ```
 http://example.com/page?name=</script><script>alert(1)</script>
@@ -210,9 +209,7 @@ fetch('/api/data')
 ```
 
 위와 같은 JSON 응답이 반환되면, \*\*`data.message`\*\*가 HTML로 삽입되어 **XSS**가 실행.
-
-```
 * innerhtml과 fetch(웹 서버에 GET 또는 POST 요청을 보내고, 서버에서 돌아오는 응답을 받아 JSON, HTML, 텍스트 등으로 반환)
-```
+
 
 
