@@ -1,4 +1,4 @@
-### 1. **X-Powered-By** 헤더 노출
+### 1. `X-Powered-By` 헤더 노출
 
 `X-Powered-By` 헤더에 서버의 기술 스택이 노출되면, 공격자는 해당 기술에 특화된 취약점을 알고 이를 **악의적인 요청**에 포함시킬 수 있습니다. 예를 들어, `X-Powered-By: PHP/7.4.3`가 노출되면 PHP에서 발생할 수 있는 특정 취약점을 악용할 수 있습니다.
 
@@ -27,7 +27,7 @@ data=O:8:"TestClass":1:{s:4:"test";s:9:"malicious";}
 ```
 
 ---
-### 2. **X-XSS-Protection: 0** 노출
+### 2. `X-XSS-Protection: 0` 노출
 
 `X-XSS-Protection` 헤더가 **0**으로 설정되어 있으면, 브라우저의 XSS 보호 기능이 비활성화됩니다. 이는 XSS 공격이 성공할 가능성이 높다는 의미입니다.
 
