@@ -38,9 +38,7 @@ http://example.com/page?name=</script><script>alert(1)</script>
 http://example.com/page?name=</script><img src=x onerror=alert(1)>
 ```
 
-**팝업이 뜨면 XSS 성공**
-
-**Reflected XSS** 또는 **DOM-Based XSS** 중 하나일 가능성
+**팝업이 뜨면 XSS 성공**. **Reflected XSS** 또는 **DOM-Based XSS** 중 하나일 가능성
 
 ---
 
@@ -48,7 +46,9 @@ http://example.com/page?name=</script><img src=x onerror=alert(1)>
 
 1. \*\*페이지 소스(view-source:)\*\*에서 삽입 위치 확인 (스크립트 블록 안인지, HTML 태그 안인지)
 
-2.```html
+2.
+```
+html
 <script>
   var name = "</script><script>alert(1)</script>";
 </script>
