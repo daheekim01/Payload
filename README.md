@@ -170,23 +170,77 @@ https://www.example.com/search?q=keyword&sort=asc
 
 ---
 
-## 7. 
+## 7.  HTTP 헤더 / HTTP 메소드 종류와 기능
+
+#### 헤더(Header)와 메소드(Method)는 HTTP 프로토콜에서 중요한 개념
+
+### (1) **HTTP 헤더 (Header)**
+
+* **정의**: HTTP 요청이나 응답의 일부로, 클라이언트와 서버가 서로 주고받는 메타 데이터를 포함하는 부분입니다.
+* **목적**: 요청 또는 응답에 대한 추가적인 정보(예: 콘텐츠 타입, 인증 정보 등)를 전달합니다.
+* **예시**:
+
+  * `Content-Type`: 서버가 전송하는 콘텐츠의 유형을 정의합니다.
+  * `Authorization`: 인증 정보를 포함합니다.
+  * `User-Agent`: 클라이언트의 브라우저 및 시스템 정보가 포함됩니다.
+  * `Accept`: 클라이언트가 받아들일 수 있는 콘텐츠 유형을 지정합니다.
+
+**예시 HTTP 헤더**:
+
+```http
+GET /index.html HTTP/1.1
+Host: www.example.com
+User-Agent: Mozilla/5.0
+Accept: text/html,application/xhtml+xml
+```
+
+### 2. **HTTP 메소드 (Method)**
+
+* **정의**: HTTP 메소드는 클라이언트가 서버에서 원하는 **동작**을 지정하는 방법입니다.
+* **목적**: 서버에 요청할 때 어떤 종류의 작업을 하기를 원하는지 정의합니다.
+* **주요 메소드**:
+
+  * **GET**: 서버에서 리소스를 가져옵니다 (데이터 조회).
+  * **POST**: 서버에 데이터를 제출합니다 (주로 양식 제출).
+  * **PUT**: 서버에 리소스를 생성하거나 수정합니다.
+  * **DELETE**: 서버에서 리소스를 삭제합니다.
+  * **PATCH**: 리소스의 일부만 수정합니다.
+  * **OPTIONS**: 서버가 지원하는 HTTP 메소드와 옵션을 확인합니다.
+  * **HEAD**: 서버에서 리소스의 헤더 정보만 가져옵니다 (데이터 조회, 본문 제외).
+
+**예시 HTTP 메소드**:
+
+```http
+GET /index.html HTTP/1.1
+POST /submit-form HTTP/1.1
+PUT /update-data HTTP/1.1
+DELETE /delete-item HTTP/1.1
+```
+
+### 정리
+
+* **헤더(Header)**: 요청이나 응답에 대한 **추가 정보**를 제공.
+* **메소드(Method)**: 서버에서 **수행할 작업**을 정의.
+
+### 예시
+
+```http
+GET /index.html HTTP/1.1
+Host: www.example.com
+User-Agent: Mozilla/5.0
+Accept: text/html,application/xhtml+xml
+```
+
+* **메소드**: `GET` (리소스를 가져오는 요청)
+* **헤더**: `Host`, `User-Agent`, `Accept` 등 (요청에 대한 메타 정보)
 
 ---
 
-## 
+## 8.
 
 ---
 
-## 9. HTTP 메소드 종류와 기능
-
-* **HTTP 메소드 종류:**
-
-  * **GET**: 데이터를 요청 (주로 조회)
-  * **POST**: 데이터를 서버에 제출 (주로 생성)
-  * **PUT**: 데이터를 서버에 업데이트 (주로 수정)
-  * **DELETE**: 서버에서 데이터 삭제
-  * **PATCH**: 데이터의 부분 업데이트
+## 9. 
 
 ---
 
