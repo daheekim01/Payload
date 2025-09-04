@@ -98,6 +98,12 @@ HTML 태그에서 **이벤트 핸들러**(예: `onmouseover`, `onerror`, `onload
 <a href="javascript:alert(1)">Click</a>
 ```
 
+**퍼센트 인코딩**:
+
+```
+jav%0aascrip%0at:alert(1)
+```
+
 * `<a href="javascript:alert('XSS')">Click here</a>`
 * `<img src="javascript:alert('XSS')">`
 
