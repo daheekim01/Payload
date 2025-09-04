@@ -190,8 +190,9 @@ https://www.example.com/search?q=keyword&sort=asc
 
   * **싱글쿼터 ('')**: 문자열을 구분하는 기호로 사용.
   * **백틱 (\`)**: 템플릿 리터럴에서 변수와 표현식을 문자열에 삽입할 때 사용 (JavaScript에서).
+
   ```
-<script>alert`xss`</script>
+  <script>alert`xss`</script>
   ```
 
 ---
