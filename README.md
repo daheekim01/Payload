@@ -170,28 +170,11 @@ https://www.example.com/search?q=keyword&sort=asc
 
 ---
 
-## 7. WAS(Web Application Server) 관련 개념
-
-* **톰캣 (Tomcat):**
-
-  * **Java 서블릿 컨테이너**로, Java 서블릿과 JSP(Java Server Pages)를 실행하는 서버.
-
-* **카탈리나 (Catalina):**
-
-  * 톰캣의 **서블릿 컨테이너**로, HTTP 요청을 처리하는 핵심 구성 요소.
-
-* **재스퍼 (Jasper):**
-
-  * 톰캣에서 **JSP 파일**을 **서블릿**으로 변환하는 엔진.
+## 7. 
 
 ---
 
-## 8. 오버라이딩(Overriding)
-
-* **오버라이딩이란?**
-
-  * 객체 지향 프로그래밍에서 **상속 관계에 있는 하위 클래스**가 **상위 클래스**의 메소드를 재정의하여 사용하는 개념.
-  * **목적:** 부모 클래스의 기본 동작을 변경하거나 확장하기 위함.
+## 
 
 ---
 
@@ -247,40 +230,11 @@ https://www.example.com/search?q=keyword&sort=asc
 
 ---
 
-## 12. 기타 보안 관련 용어
-
-* **FQDN (Fully Qualified Domain Name)**:
-
-  * 도메인 이름의 **전체 주소**로, **호스트명 + 도메인명**이 포함된 주소. 예: `www.example.com`
-
-* **DSA (Digital Signature Algorithm)**:
-
-  * 디지털 서명 알고리즘으로, 메시지의 **무결성**과 **인증**을 제공.
-
-* **ASN (Autonomous System Number)**:
-
-  * 인터넷에서 **자율 시스템**을 구별하는 고유 번호.
+## 12.
 
 ---
 
-## 13. 보안 파트별 업무 숙지 교육
-
-### 13.1 관리 보안 파트 업무
-
-* **업무 내용 인지:**
-
-  * **관리대장** 작성, 점검사항 및 조치사항 문서화, **DPA**(Data Protection Act), **SOA**(Statement of Applicability) 보고서 작성 현황 파악.
-
-### 13.2 보안 운영 파트 업무
-
-* **기술 파악:**
-
-  * **ElasticSearch**: 대용량 데이터를 실시간으로 검색 및 분석.
-  * **Zabbix**: 서버 및 네트워크 모니터링 툴.
-  * **PaloAlto**: 차세대 방화벽 솔루션.
-  * **휴네시온**: 보안 관리 플랫폼.
-  * **샤크라맥스**: IT 보안 분석 도구.
-  * **Jamf**: 애플 디바이스 관리 솔루션.
+## 13. 
 
 ---
 
