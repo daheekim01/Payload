@@ -15,6 +15,12 @@
 
 ---
 
+# 그 외 XSS 우회 기법
+
+<scr<script>ipt>alert(1)</scr</script>ipt> ← 중첩 태그 사용
+<img src="x" onerror=alert(1)>    ← 태그 속성 활용
+
+---
 
 ### 1. **HTML 인코딩 우회**
 
@@ -84,6 +90,10 @@ HTML 태그에서 **이벤트 핸들러**(예: `onmouseover`, `onerror`, `onload
 **JavaScript 프로토콜**을 사용하면 공격자는 **URL**의 **href** 속성에 **JavaScript** 코드를 실행할 수 있습니다. 이는 **하이퍼링크** 또는 **`src` 속성**에서 XSS를 유발할 수 있습니다.
 
 #### 예시:
+
+```html
+<a href="javascript:alert(1)">Click</a>
+```
 
 * `<a href="javascript:alert('XSS')">Click here</a>`
 * `<img src="javascript:alert('XSS')">`
