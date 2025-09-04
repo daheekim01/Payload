@@ -1,11 +1,16 @@
 # 보안 관련 개념 정리 메모
 
-## 1. XSS (Cross-Site Scripting)
+## 1. 메타문자 XSS (Cross-Site Scripting)
 
 * **악성 스크립트 삽입 예시:**
 
   ```html
   “><script>alert`xss`</script>
+  ```
+
+* 템플릿 리터럴에서 문자열의 끝을 나타내는 백틱이 있을 경우
+  ```
+  `\`<script>alert('XSS')</script>\``
   ```
 
 * **메타 문자 종류 확인하기 / HTML 예약어 예시:**
