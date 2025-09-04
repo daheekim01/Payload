@@ -230,27 +230,11 @@ Location: https://example.com/dashboard?user_id=123&redirected=true
 
 ---
 
-#### **5. 보안적 측면에서의 주의사항**
-
-* **XSS (Cross-Site Scripting)**: HTTP 매개변수가 사용자 입력을 포함할 때, 이를 적절히 필터링하지 않으면 악성 스크립트가 실행될 위험이 있습니다.
-* **SQL Injection**: 매개변수가 잘못 처리되면, SQL 쿼리에서 악용되어 **SQL 인젝션 공격**이 발생할 수 있습니다.
-* **민감 정보 노출**: URL에 민감한 정보(예: 로그인 자격 증명, 결제 정보)가 포함되지 않도록 주의해야 합니다. 예를 들어, URL에 `password=12345`가 포함되면 이는 보안상 큰 위험이 됩니다.
-
----
-
-### **정리**
-
-HTTP 매개변수는 클라이언트가 서버에 추가적인 정보를 전달하는 중요한 방법이며, URL의 쿼리 스트링을 통해 쉽게 전달됩니다. 리다이렉션과 결합하여 사용자가 요청한 리소스나 정보를 효과적으로 처리할 수 있습니다. 또한 보안상의 이유로 매개변수 처리 시 필터링과 검증이 중요합니다.
-
-* **HTTP 매개변수와 URL 값:**
-
-  * HTTP 요청 매개변수는 URL에 포함되어 서버로 전송되며, 서버는 이를 사용하여 리소스를 제공하거나 리다이렉션을 수행할 수 있음.
-
----
-
 ## 7.  HTTP 헤더 / HTTP 메소드 종류와 기능
 
 #### 헤더(Header)와 메소드(Method)는 HTTP 프로토콜에서 중요한 개념
+* **헤더(Header)**: 요청이나 응답에 대한 **추가 정보**를 제공.
+* **메소드(Method)**: 서버에서 **수행할 작업**을 정의.
 
 ### (1) **HTTP 헤더 (Header)**
 
@@ -294,24 +278,6 @@ POST /submit-form HTTP/1.1
 PUT /update-data HTTP/1.1
 DELETE /delete-item HTTP/1.1
 ```
-
-### 정리
-
-* **헤더(Header)**: 요청이나 응답에 대한 **추가 정보**를 제공.
-* **메소드(Method)**: 서버에서 **수행할 작업**을 정의.
-
-### 예시
-
-```http
-GET /index.html HTTP/1.1
-Host: www.example.com
-User-Agent: Mozilla/5.0
-Accept: text/html,application/xhtml+xml
-```
-
-* **메소드**: `GET` (리소스를 가져오는 요청)
-* **헤더**: `Host`, `User-Agent`, `Accept` 등 (요청에 대한 메타 정보)
-
 ---
 
 ## 8.
