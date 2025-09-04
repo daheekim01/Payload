@@ -179,7 +179,7 @@ https://example.com/search?q=python&page=2
 
 위 URL에서 `q=python`과 `page=2`는 **HTTP 매개변수**. 각각 검색어와 페이지 번호를 나타내며, 서버는 이 정보를 이용해 검색 결과와 페이지를 반환.
 
----
+
 
 #### **(2) URL에서 HTTP 매개변수 사용 예시**
 
