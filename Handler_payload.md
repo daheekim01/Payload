@@ -716,3 +716,65 @@
 ```
 
 > **`<style>`** 태그 내에서 자바스크립트를 실행시킬 수 있는 방법입니다.
+
+---
+
+### 26. **`eval()`**
+
+```html
+<script>eval('alert("XSS - eval")');</script>
+```
+
+> \*\*`eval()`\*\*은 인자로 전달된 문자열을 실행하기 때문에, 사용자가 입력한 데이터로 악성 코드를 실행할 수 있습니다.
+
+---
+
+### 27. **`href`**
+
+```html
+<a href="javascript:alert('XSS - href')">Click me</a>
+```
+
+> \*\*`href="javascript:..."`\*\*을 사용하면 사용자가 링크를 클릭할 때 자바스크립트 코드가 실행됩니다.
+
+---
+
+### 28. **`innerHTML`**
+
+`innerHTML`은 HTML 요소의 콘텐츠를 직접 수정하는 데 사용됩니다. 이때 사용자 입력값이 직접 `innerHTML`에 삽입되면, 악성 자바스크립트 코드가 실행될 수 있습니다.
+
+```html
+<div id="test"></div>
+<script>
+  document.getElementById('test').innerHTML = '<img src="x" onerror="alert(\'XSS - innerHTML\')">';
+</script>
+```
+
+> \*\*`innerHTML`\*\*로 삽입된 HTML 요소는 자바스크립트가 실행될 수 있기 때문에 XSS 공격의 취약점이 될 수 있습니다.
+
+---
+
+### 29. **`confirm()`**
+
+`confirm()`은 사용자가 확인 대화 상자를 표시하는 함수입니다. 이 함수도 XSS 공격 벡터로 악용될 수 있습니다.
+
+```html
+<a href="javascript:confirm('XSS - confirm')">Click me</a>
+```
+
+> **`confirm()`** 대화 상자를 띄워서 사용자의 반응을 받을 수 있습니다. `javascript:`를 사용해 클릭 시 자바스크립트를 실행합니다.
+
+---
+
+### 30. **`iframe`**
+
+`iframe` 태그는 외부 페이지를 현재 페이지 내에 삽입하는 태그입니다. 이 태그에 악성 콘텐츠를 삽입해 **페이지 탈취**나 **Phishing**을 시도할 수 있습니다.
+
+```html
+<iframe src="javascript:alert('XSS - iframe')"></iframe>
+```
+
+> \*\*`iframe`\*\*에 `javascript:`를 사용하면, 해당 `iframe`이 자바스크립트를 실행하게 할 수 있습니다.
+
+---
+
