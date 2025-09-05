@@ -31,9 +31,16 @@
 | `onkeypress`    | 키를 누를 때 실행 (deprecated, `keydown` 또는 `keyup` 사용 권장) |
 | `onload`        | 페이지 또는 리소스가 완전히 로드되었을 때 실행                          |
 | `onunload`      | 페이지가 언로드될 때 실행                                      |
+| `ondrop`        | 드래그한 요소가 해당 영역에 놓일 때 발생                                  |
+| `oncopy`        | 사용자가 콘텐츠를 복사할 때 발생                                      |
+| `oncut`         | 사용자가 콘텐츠를 잘라낼 때 발생                                      |
+| `onfinish`      | 애니메이션이나 비디오가 끝날 때 발생                                      |
+| `onscroll`      | 페이지나 요소가 스크롤될 때 발생                          |
 | `onbounce`      | 비디오나 오디오의 애니메이션이 바운스할 때 실행                          |
+| `onstart`       | 애니메이션이나 비디오가 시작될 때 발생                                         |
 | `onreset`       | 폼이 리셋될 때 실행                                         |
 | `onrowexit`     | HTML `<table>`의 행이 포커스를 잃을 때 실행                     |
+| `onactivate`    | 요소가 활성화될 때 발생                          |
 | `ondeactivate`  | `<input>` 요소나 포커스를 잃을 때 실행                          |
 | `onbeforecut`   | 텍스트를 자르기 전에 실행                                      |
 | `onsubmit`      | 폼 제출 시 실행                                           |
