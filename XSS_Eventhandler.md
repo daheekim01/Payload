@@ -6,12 +6,39 @@
 
 #### 대표적인 이벤트 핸들러:
 
-| 이벤트           | 설명                  |
-| ------------- | ------------------- |
-| `onerror`     | 이미지나 리소스 로드 실패 시 실행 |
-| `onload`      | 리소스 로드 완료 시 실행      |
-| `onclick`     | 클릭 시 실행             |
-| `onmouseover` | 마우스 오버 시 실행         |
+| 이벤트             | 설명                                                  |
+| --------------- | --------------------------------------------------- |
+| `onerror`       | 이미지나 리소스 로드 실패 시 실행                                 |
+| `onload`        | 리소스 로드 완료 시 실행                                      |
+| `onclick`       | 클릭 시 실행                                             |
+| `onmouseover`   | 마우스 오버 시 실행                                         |
+| `onstop`        | `media` 요소에서 재생 중지 시 실행 (예: `<video>`)              |
+| `ontoggle`      | `<details>` 태그의 열림/닫힘 상태가 변경될 때 실행                  |
+| `onresize`      | 윈도우나 요소의 크기가 변경될 때 실행                               |
+| `onfocusin`     | 요소에 포커스가 들어갈 때 실행 (버블링 발생)                          |
+| `onfocus`       | 요소에 포커스가 들어갈 때 실행                                   |
+| `onabort`       | 리소스 로드가 중단될 때 실행                                    |
+| `ondblclick`    | 더블 클릭 시 실행                                          |
+| `ondragstart`   | 드래그 시작 시 실행                                         |
+| `ondragenter`   | 드래그된 요소가 드롭 가능한 영역에 들어올 때 실행                        |
+| `ondragleave`   | 드래그된 요소가 드롭 가능한 영역을 떠날 때 실행                         |
+| `onkeydown`     | 키를 누를 때 실행                                          |
+| `onselectstart` | 텍스트 선택이 시작될 때 실행                                    |
+| `onselect`      | 텍스트가 선택될 때 실행                                       |
+| `onmousemove`   | 마우스가 요소 내에서 움직일 때 실행                                |
+| `onmouseout`    | 마우스가 요소 밖으로 나갈 때 실행                                 |
+| `onwheel`       | 마우스 휠을 굴릴 때 실행                                      |
+| `onkeypress`    | 키를 누를 때 실행 (deprecated, `keydown` 또는 `keyup` 사용 권장) |
+| `onload`        | 페이지 또는 리소스가 완전히 로드되었을 때 실행                          |
+| `onunload`      | 페이지가 언로드될 때 실행                                      |
+| `onbounce`      | 비디오나 오디오의 애니메이션이 바운스할 때 실행                          |
+| `onreset`       | 폼이 리셋될 때 실행                                         |
+| `onrowexit`     | HTML `<table>`의 행이 포커스를 잃을 때 실행                     |
+| `ondeactivate`  | `<input>` 요소나 포커스를 잃을 때 실행                          |
+| `onbeforecut`   | 텍스트를 자르기 전에 실행                                      |
+| `onsubmit`      | 폼 제출 시 실행                                           |
+| `onpaste`       | 텍스트가 붙여넣어질 때 실행                                     |
+| `onchange`      | 폼 요소의 값이 변경될 때 실행                                   |
 
 ---
 
@@ -145,29 +172,3 @@ document.domain
 | **JSON 기반 XSS**              | ✅ 또는 ❌    | JSON 응답에 JavaScript 형태로 값 삽입 가능 |
 
 ---
-
-## 📌 **Command Injection** (추가 설명)
-
-### 공격 방식
-
-```bash
-someinput; rm -rf /
-```
-
-서버에서 입력값을 OS 명령어에 직접 넘길 때 발생할 수 있습니다.
-
-```python
-os.system("ping " + user_input)
-```
-
-### 🛡️ 방어법
-
-* OS 명령어 사용 시 **입력값을 절대 직접 연결하지 않기**
-* `subprocess.run` 등에서 `shell=False` 사용
-* allowlist로 명령어 파라미터 제한
-
----
-
-## 결론
-
-**이벤트 핸들러 기반 XSS**는 HTML 태그의 이벤트 속성을 악용하는 공격입니다. 공격자는 `onerror`, `onload`, `onclick`, `onmouseover` 등의 이벤트를 사용하여 JavaScript 코드를 실행시킬 수 있습니다. 이를 막기 위해서는 필터링된 입력값을 처리할 때 각종 우회 기법을 고려하고, JavaScript 코드 삽입을 방지하기 위한 조치가 필요합니다.
