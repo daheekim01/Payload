@@ -1,4 +1,4 @@
-# 🛡️ DOM 기반 XSS와 HTML 이벤트 핸들러 공격 분석
+## 🛡️ DOM 기반 XSS와 HTML 이벤트 핸들러 공격 분석
 
 ## 📌 DOM-Based XSS란?
 
@@ -24,7 +24,8 @@
 <input onchange="" onfocus=alert(1) autofocus>
 ```
 
-➡️ **자동 실행되는 XSS**
+➡️ 자동 실행되는 XSS
+
 ---
 
 ## ⚠️ 이벤트 핸들러 기반 DOM XSS 공격
@@ -42,17 +43,6 @@ element.setAttribute('onchange', userInput);
 ```
 
 ➡️ 사용자가 해당 필드에서 포커스를 잃을 때 `alert(1)` 실행
-✅ **XSS 발생**
-
----
-
-## 🧩 실제로 관찰된 현상 예시
-
-### 상황
-
-* **비밀번호 변경 후 저장** 등의 이벤트 후
-* **브라우저 콘솔**에 `onchange`, `oncomplete` 관련 로그가 출력됨
-* 이는 해당 페이지가 **많은 DOM 조작을 수행**하고 있고, 이벤트 핸들러가 사용자 입력 기반으로 설정될 가능성이 있다는 신호
 
 ---
 
