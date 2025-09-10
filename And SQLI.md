@@ -48,7 +48,7 @@ GET /search.php?s=1/**/and 3=3
 1'and(select 1)
 ```
 
-* 문자열이 주입되면 최종 SQL 쿼리는 대략 다음과 같은 형태가 됩니다
+문자열이 주입되면 최종 SQL 쿼리는 대략 다음과 같은 형태가 됩니다
 
 ```sql
 SELECT * FROM users WHERE id = '1' and (select 1)
