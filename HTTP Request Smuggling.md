@@ -1,42 +1,10 @@
-* ✅ "Potential OPTIONS Method Request Smuggling Attack: Request Smuggling Detected in Request Body"
+## 🧨 HTTP Request Smuggling (요청 스머글링) 요약
 
-| 부분                           | 의미                                         |
-| ---------------------------- | ------------------------------------------ |
-| **Potential OPTIONS Method** | `OPTIONS` 요청을 사용한 의심스러운 활동                 |
-| **Request Smuggling Attack** | HTTP 요청 스머글링 공격 가능성                        |
-| **Detected in Request Body** | 요청 \*\*본문(Request Body)\*\*에 의심스러운 형식이 발견됨 |
+### 🔍 정의:
 
-
-## 💡 이 경우 OPTIONS 메서드가 왜 문제인가?
-
-* 보통 서버는 `OPTIONS` 요청에는 큰 관심을 둠 (검사도 약함)
-* 공격자는 이걸 노려서 `OPTIONS` 요청으로 **Request Smuggling을 시도**하기도 함
-* 예를 들면, 이런 요청이 들어올 수 있음:
-
-```http
-OPTIONS / HTTP/1.1
-Host: vulnerable.com
-Content-Length: 4
-Transfer-Encoding: chunked
-
-0
-
-GET /admin HTTP/1.1
-Host: vulnerable.com
-```
-
-* 위 요청은 프록시는 `OPTIONS` 요청으로 보고 끝냄
-* 하지만 백엔드는 그 뒤에 숨겨진 `GET /admin` 요청까지 처리해버릴 수 있음
-
-→ 💥 **인증 우회**, **세션 하이재킹**, **캐시 오염**, **XSS, CSRF 삽입** 가능
-
-
----
-
-
-## 🚨 **HTTP Request Smuggling**이란?
-
-> 서버 간 통신에서, **HTTP 요청 파싱의 불일치**를 악용해 하나의 요청에 **숨겨진 두 번째 요청**을 몰래 끼워 넣는 공격.
+\*\*프론트 서버(프록시, CDN, 로드밸런서)\*\*와 **백엔드 서버**가 **HTTP 요청 파싱 방식에 차이**가 있을 때,
+공격자가 **한 번의 요청에 몰래 두 번째 요청을 끼워 넣어**
+프론트는 무시하고 백엔드는 실행하게 만드는 **비동기 요청 오염 공격**.
 
 ---
 
@@ -76,24 +44,29 @@ Host: vulnerable.com
 
 💣 **서로 다르게 해석되면서** 프록시와 백엔드 간 요청 분리가 꼬이고, **숨겨진 두 번째 요청이 백엔드에 몰래 전달됨**
 
+
 ---
 
-### 🔥 예시 공격 요청 (Transfer-Encoding과 Content-Length 혼합)
+## 🧪 기본 형태 예시
 
 ```http
 POST / HTTP/1.1
-Host: vulnerable.com
+Host: victim.com
 Content-Length: 4
 Transfer-Encoding: chunked
 
-0 (데이터가 끝나면 0 크기의 청크가 와서 전송이 종료)
+0
 
 GET /admin HTTP/1.1
-Host: vulnerable.com
+Host: victim.com
 ```
 
+* 프록시는 `Content-Length: 4` 기준으로 **첫 요청만 처리**
+* 백엔드는 `Transfer-Encoding: chunked` 기준으로 **청크 끝까지 읽고**, **숨겨진 GET /admin 처리**
 
-### 1. **두 번째 요청이 실제로 처리됨 (Smuggled 요청 처리됨)**
+💥 즉, **요청 한 개처럼 보이지만, 실제론 2개짜리 요청** → **스머글링 성공**
+
+#### 1. **두 번째 요청이 실제로 처리됨 (Smuggled 요청 처리됨)**
 
 * `OPTIONS`나 `POST`를 보냈는데,
   응답에서 `/admin` 같은 **두 번째 요청의 결과**가 나옴
@@ -111,7 +84,7 @@ Welcome to admin dashboard!
 
 ---
 
-### 2. **응답이 꼬임 (잘려 있음, 구조 이상함)**
+#### 2. **응답이 꼬임 (잘려 있음, 구조 이상함)**
 
 * 응답이 부분적으로 잘리거나
 * 두 응답이 섞여 있음
@@ -138,7 +111,7 @@ Transfer-Encoding error
 
 ---
 
-### 3. **캐시 오염 (HTTP Desync 공격)**
+#### 3. **캐시 오염 (HTTP Desync 공격)**
 
 * 공격자가 숨겨둔 요청을 캐시에 저장시키고,
 * 이후 다른 사용자에게 악성 응답이 돌아감
@@ -159,8 +132,58 @@ GET /malicious-content HTTP/1.1
 → 이후 일반 사용자가 접속하면
 `/malicious-content` 내용이 **정상 페이지처럼 응답됨** → 캐시 오염
 
+
 ---
 
+## 💥 `HEAD` / `OPTIONS` 기반 Request Smuggling
+
+### 📌 핵심 아이디어:
+
+* `HEAD`, `OPTIONS`는 **서버가 대충 처리하거나 무시하는 경우가 많음**
+* 보안 필터나 로깅 시스템도 **정상 OPTIONS는 로그 안 남기기도 함**
+* → 공격자가 이 \*\*"무시되는 요청"\*\*에 **몰래 두 번째 요청을 숨김**
+* 백엔드 서버는 무심코 **숨겨진 두 번째 요청까지 실행**
+
+---
+
+### ✅ `OPTIONS` 기반 Request Smuggling 예시
+
+```http
+OPTIONS / HTTP/1.1
+Host: vulnerable.com
+Content-Length: 4
+Transfer-Encoding: chunked
+
+0
+
+GET /admin HTTP/1.1
+Host: vulnerable.com
+```
+
+> 프록시는 "OPTIONS 요청만 왔구나" 하고 종료
+> 백엔드는 청크 해석 후, **숨겨진 GET 요청을 실행**
+> → **인증 우회**, **비인가 접근**, **캐시 오염**, **로깅 우회** 가능
+
+---
+
+### ✅ `HEAD` 메서드도 악용 가능
+
+```http
+HEAD / HTTP/1.1
+Host: vulnerable.com
+Content-Length: 4
+Transfer-Encoding: chunked
+
+0
+
+GET /internal-api HTTP/1.1
+Host: vulnerable.com
+```
+
+> `HEAD`는 응답 body가 없기 때문에 응답 이상을 감지하기 어려움
+> 관리자용 API 또는 민감 리소스가 **노출된 채 실행**
+
+---
 
 ## ❓ CDN 공격 예시
 **CDN(예: 아카마이) 뒤에 숨은 실제 서버 또는 공격면**을 찾으려는 공격
@@ -218,6 +241,29 @@ Smuggle:
 | ⚠️ 응답이 꼬이거나 잘림                  | **취약 가능성 있음**             |
 | 🛑 400 / 502 / connection reset | 파싱 충돌 발생, 취약 가능성 있음       |
 | 🧪 캐시 결과가 이상하게 바뀜               | 캐시 스머글링 (Desync), 고위험 취약점 |
+
+---
+
+## 💡 왜 `OPTIONS` 메서드가 특히 위험한가?
+
+| 이유                                 | 설명                                  |
+| ---------------------------------- | ----------------------------------- |
+| ❌ 서버가 OPTIONS 요청을 "단순한 프리플라이트"로 간주 | CORS Preflight로 처리하고 로그 남기지 않음      |
+| ❌ 보안 필터에서 OPTIONS는 무시 대상           | WAF, IDS 등에서 OPTIONS 요청은 탐지 예외처리 많음 |
+| ❌ 응답이 비어 있어서 이상 징후 탐지 어려움          | 로그나 리턴 body가 없음 (HEAD와 유사)          |
+| ✔️ 백엔드는 여전히 전체 요청 읽음               | chunked 처리하면서 숨겨진 두 번째 요청 실행 가능     |
+
+---
+
+## 🚨 실제 발생 가능한 공격 영향
+
+| 공격 유형                          | 설명                             |
+| ------------------------------ | ------------------------------ |
+| 🔓 **인증 우회**                   | 숨겨진 GET 요청으로 로그인 없이 관리자 페이지 접근 |
+| 🎯 **세션 하이재킹**                 | `Cookie` 헤더 포함된 숨겨진 요청 실행      |
+| 💾 **캐시 오염 (Cache Poisoning)** | 숨겨진 요청이 CDN/프록시 캐시에 저장됨        |
+| 🪤 **XSS, CSRF 삽입**            | 스머글링된 요청을 통해 HTML/JS 삽입        |
+| 🔍 **보안 우회**                   | 로깅/WAF 무력화, 요청 탐지 불가           |
 
 ---
 
