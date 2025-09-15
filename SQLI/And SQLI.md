@@ -14,7 +14,7 @@
 
 ### **입력값 설명:**
 
-* **`username=admin' AND 1=1 --`**: 쿼리에서 `username` 필드에 `admin` 값을 넣고, 뒤에 `AND 1=1`을 추가하여 조건을 항상 참으로 만들어 쿼리 우회. `--`은 주석을 시작해 나머지 쿼리 부분을 무시하게 함.
+* **`username=admin' AND 1=1 --`**, **`admin' AND 1=1#`**: 쿼리에서 `username` 필드에 `admin` 값을 넣고, 뒤에 `AND 1=1`을 추가하여 조건을 항상 참으로 만들어 쿼리 우회. 주석 `--`와 `#`은 나머지 쿼리 부분을 무시하게 함.
 * **`password=' OR 1=1 --`**: `password` 필드에 `OR 1=1`을 넣어, 로그인 쿼리에서 인증을 우회하여 항상 로그인되게 만듬.
 * **`username=admin' UNION SELECT null, username, password FROM users --`**: `UNION` 쿼리를 사용해 다른 테이블의 데이터를 추출하려고 시도. 예시에서는 `users` 테이블에서 `username`과 `password`를 가져오려고 함.
 
