@@ -31,7 +31,7 @@
 
 
 * <scr<script>ipt>alert(1)</scr</script>ipt>    ← 중첩 태그 사용
-* <img src="x" onerror=alert(1)>    ← 태그 속성 활용
+* `<img src="x" onerror=alert(1)>`    ← 태그 속성 활용
   
 ---
 
