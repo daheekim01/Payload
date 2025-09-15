@@ -47,12 +47,13 @@
 
 ## 🚨 패턴이 동적 데이터와 함께 쓰일 때 위험
 
-예시:
+### ✅ `innerHTML`
+
+> 🚨 동적 HTML 삽입 시 자주 XSS 발생
 
 ```js
-// 사용자 입력이 들어온 경우 (XSS 발생)
 const userInput = `<img src=x onerror=alert(1)>`;
-element.innerHTML = userInput;  // 💥 XSS 취약
+element.innerHTML = userInput;
 ```
 
 또는
@@ -61,4 +62,141 @@ element.innerHTML = userInput;  // 💥 XSS 취약
 element.innerHTML = `<script>alert('XSS')</script>`;  // 💥 실행됨
 ```
 
+💥 결과: 이미지 로딩 실패 → `onerror` 실행 → `alert(1)` 발생
+
+---
+
+### ✅ `outerHTML`
+
+> 🚨 요소 전체를 교체 → `script`, `event handler` 삽입 가능
+
+```js
+const userInput = `<script>alert(1)</script>`;
+element.outerHTML = userInput;
+```
+
+💥 결과: 기존 요소가 제거되고 스크립트 실행 → `alert(1)`
+
+---
+
+### ✅ `document.write()`
+
+> 🚨 HTML 전체를 문서에 삽입 → DOM 삽입 즉시 실행
+
+```js
+const userInput = `<script>alert(1)</script>`;
+document.write(userInput);
+```
+
+💥 결과: 문서 파싱 도중 스크립트 실행됨
+
+---
+
+### ✅ `insertAdjacentHTML()`
+
+> 🚨 HTML 조각 삽입 → 이벤트 핸들러나 `<script>` 삽입 가능
+
+```js
+const userInput = `<svg onload=alert(1)>`;
+element.insertAdjacentHTML("beforeend", userInput);
+```
+
+💥 결과: SVG 요소 삽입 후 `onload` 트리거 → `alert(1)`
+
+---
+
+### ✅ `dangerouslySetInnerHTML` (React)
+
+> 🚨 React에서 직접 HTML 삽입 시 사용 → 이름부터 위험
+
+```jsx
+const userInput = `<img src=x onerror=alert(1)>`;
+return <div dangerouslySetInnerHTML={{ __html: userInput }} />;
+```
+
+💥 결과: `<img>` 삽입 → `onerror`로 `alert(1)`
+
+---
+
+### ✅ `eval()`
+
+> 🚨 문자열이 JS 코드로 실행됨 → 공격자가 코드 주입 가능
+
+```js
+const userInput = "alert(1)";
+eval(userInput);
+```
+
+💥 결과: `alert(1)` 실행
+
+---
+
+### ✅ `new Function()`
+
+> 🚨 `eval`과 거의 동일, 문자열 실행
+
+```js
+const userInput = "alert(1)";
+const f = new Function(userInput);
+f();
+```
+
+💥 결과: `alert(1)` 실행
+
+---
+
+### ✅ `setTimeout()` / `setInterval()` (문자열 실행 시)
+
+> 🚨 첫 번째 인자가 문자열이면 코드로 실행됨
+
+```js
+const userInput = "alert(1)";
+setTimeout(userInput, 1000);
+```
+
+💥 결과: 1초 후 `alert(1)` 실행
+
+---
+
+### ✅ `on*` 이벤트 속성 (`setAttribute`, DOM 삽입 시)
+
+> 🚨 이벤트 핸들러 속성은 바로 실행됨
+
+```js
+const userInput = "alert(1)";
+element.setAttribute("onclick", userInput);
+```
+
+💥 결과: 클릭하면 `alert(1)` 실행
+
+---
+
+### ✅ `iframe.srcdoc`
+
+> 🚨 HTML을 iframe 안에 직접 삽입
+
+```js
+const userInput = `<script>alert(1)</script>`;
+iframe.srcdoc = userInput;
+```
+
+💥 결과: iframe 로딩 시 `alert(1)` 실행
+
+---
+
+### ✅ `location.href` + `javascript:` or `data:` URI
+
+> 🚨 자바스크립트 URI나 데이터 URI를 통한 XSS
+
+```js
+location.href = "javascript:alert(1)";
+```
+
+또는:
+
+```js
+location.href = "data:text/html,<script>alert(1)</script>";
+```
+
+💥 결과: 페이지 이동 후 `alert(1)` 실행
 
