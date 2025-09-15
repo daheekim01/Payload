@@ -12,7 +12,9 @@
 | `Element.setAttribute()`                     | `on*` 이벤트 속성을 동적으로 삽입        | ⚠️ 조건부 위험         | `el.setAttribute("onclick", "alert(1)");`                      |
 | `location.href =` (URL 조작)                   | JS로 리디렉션 시 악용 가능             | ⚠️ 중간             | `location.href = "javascript:alert(1)"` (구형 브라우저 한정)           |
 | `eval()`                                     | 문자열을 코드로 실행                  | ☢️ 치명적 (원천적으로 위험) | `eval("alert(1)")`                                             |
+| `new Function(string)` | 문자열로 넘기면 eval처럼 동작           | ☢️ 매우 위험          |                                  |
 | `setTimeout(string)` / `setInterval(string)` | 문자열로 넘기면 eval처럼 동작           | ☢️ 매우 위험          | `setTimeout("alert(1)", 1000)`                                 |
+| `on*` 이벤트 핸들러 직접 삽입 | 문자열로 넘기면 eval처럼 동작           | ⚠️ 조건부 위험          | `el.onclick = 'alert(1)'`                                 |
 
 ---
 
@@ -21,3 +23,23 @@
 * `innerHTML`, `dangerouslySetInnerHTML` 등은 **HTML 구조를 직접 삽입**할 수 있기 때문에, 사용자 입력을 그대로 넣으면 XSS에 매우 취약
 * `eval()`, `setTimeout(string)`, `Function()` 등의 **동적 코드 실행 API**는 기본적으로 사용 금지해야 함
 * `Element.setAttribute()`는 이벤트 핸들러 속성(`onclick`, `onerror`, ...)에 대해 조심해야 함
+
+---
+
+## 🚨 패턴이 동적 데이터와 함께 쓰일 때 위험
+
+예시:
+
+```js
+// 사용자 입력이 들어온 경우 (XSS 발생)
+const userInput = `<img src=x onerror=alert(1)>`;
+element.innerHTML = userInput;  // 💥 XSS 취약
+```
+
+또는
+
+```js
+element.innerHTML = `<script>alert('XSS')</script>`;  // 💥 실행됨
+```
+
+
