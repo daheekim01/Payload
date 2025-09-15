@@ -18,15 +18,7 @@
 
 ---
 
-# 그 외 XSS 우회 기법
-
-* <scr<script>ipt>alert(1)</scr</script>ipt> ← 중첩 태그 사용
-* 
-  ```html
-  <img src="x" onerror=alert(1)>    ← 태그 속성 활용
-  ```
-
-## 🧨 필터 우회 기법 예시 (Bypass Techniques)
+## 🧨 그 외 필터 우회 기법 예시 (Bypass Techniques)
 
 | 기법            | 설명                         | 예시                                                         |
 | ------------- | -------------------------- | ---------------------------------------------------------- |
@@ -38,6 +30,9 @@
 | Null 문자 우회    | 필터 우회에 사용 (일부 서버/브라우저에서)   | `<img src=x%00 onerror=alert(1)>`                          |
 
 
+* <scr<script>ipt>alert(1)</scr</script>ipt>    ← 중첩 태그 사용
+* <img src="x" onerror=alert(1)>    ← 태그 속성 활용
+  
 ---
 
 ### 1. **HTML 인코딩 우회**
