@@ -14,7 +14,7 @@
 | `eval()`                                     | 문자열을 코드로 실행                  | ☢️ 치명적 (원천적으로 위험) | `eval("alert(1)")`                                             |
 | `new Function(string)` | 문자열로 넘기면 eval처럼 동작           | ☢️ 매우 위험          |                                  |
 | `setTimeout(string)` / `setInterval(string)` | 문자열로 넘기면 eval처럼 동작           | ☢️ 매우 위험          | `setTimeout("alert(1)", 1000)`                                 |
-| `on*` 이벤트 핸들러 직접 삽입 | 문자열로 넘기면 eval처럼 동작           | ⚠️ 조건부 위험          | `el.onclick = 'alert(1)'`                                 |
+| `on*` 이벤트 핸들러 직접 삽입 |            | ⚠️ 조건부 위험          | `el.onclick = 'alert(1)'`                                 |
 
 ---
 
