@@ -199,6 +199,8 @@ HTML5에서는 다양한 **데이터 속성**(예: `data-*` 속성)을 제공하
 ### 11. **공백 우회(%20) 및 인코딩 우회 페이로드**
 
 
+
+
 ### ✋ 공백 우회 정리
 
 | 원래 문자         | 우회 방법 예시                                                     |
@@ -302,7 +304,7 @@ HTML 파서나 브라우저는 공백 대신 아래 문자들을 **공백처럼 
 
 ---
 
-### 🛠️ 실전 예시
+### 🛠️ 예시
 
 #### 취약 코드 (CSR XSS 예시):
 
@@ -311,7 +313,6 @@ const input = new URLSearchParams(location.search).get("q");
 document.getElementById("output").innerHTML = input;
 ```
 
----
 #### 공격 URL (공백 우회)
 
 ```
