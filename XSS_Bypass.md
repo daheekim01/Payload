@@ -149,6 +149,10 @@ Base64 인코딩을 사용하면 **악성 스크립트**를 **인코딩된 문�
 
 Base64로 인코딩된 `alert('XSS')`가 **서버에서 전달되거나 HTML로 렌더링**될 때, 클라이언트 측에서 **디코딩**하여 **스크립트를 실행**하게 됩니다.
 
+```html
+<iframe src="data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4="></iframe>
+```
+
 ---
 
 ### 8. **iframe 및 Object 태그 우회**
