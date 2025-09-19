@@ -92,3 +92,11 @@ substr(database(), 3, 1) = '_'
 
   * `substr(database(), 3, 1)`: 데이터베이스 이름의 **3번째 문자** 추출
   * `= '_'`: 그 문자가 밑줄(_)인지 확인
+ 
+#### 3. **컬럼 이름 추출 (정보 스키마 탐색)**
+
+* **쿼리 예시**: `users` 테이블의 첫 번째 컬럼 이름의 첫 문자가 `'u'`인지 확인
+
+```sql
+substr((select column_name from information_schema.columns where table_name = 'users' limit 1), 1, 1) = 'u'
+```
