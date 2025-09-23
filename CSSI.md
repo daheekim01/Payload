@@ -1,12 +1,63 @@
 ## CSS Injection (CSS-based exfiltration attack)
+\*\*CSS Injection(스타일 주입)\*\*은 공격자가 **웹페이지의 CSS 스타일을 조작하거나 새로운 CSS 코드를 삽입하는 공격 기법**입니다.
+
+### 주요 목적:
+
+* 사이트의 외형을 왜곡
+* 민감한 정보를 노출 (예: 입력값 훔치기)
+* 사용자 인터페이스(UI) 혼란
+* 클릭재킹(clickjacking) 등 다른 공격을 위한 기반
 
 ---
 
-## 🧠 개념
+## ✅ CSS Injection이 발생하는 조건
 
-### 1. CSS Injection이란?
+CSS Injection은 보통 **서버나 클라이언트가 사용자 입력을 필터링하지 않거나 부적절하게 처리**할 때 발생합니다.
 
-웹 페이지에서 **사용자가 입력한 CSS 코드가 그대로 삽입**되어 실행될 수 있을 때, 공격자가 CSS를 조작해 정보를 유출할 수 있는 보안 취약점이에요.
+예시:
+
+```html
+<!-- 사용자 입력값이 직접 style 속성이나 style 태그 내에 삽입되는 경우 -->
+<div style="color: {{ user_input }};">Welcome</div>
+```
+
+만약 사용자가 다음과 같이 입력했다면:
+
+```
+red; background-image: url(javascript:alert(1));
+```
+
+결과:
+
+```html
+<div style="color: red; background-image: url(javascript:alert(1));">Welcome</div>
+```
+
+> 대부분 브라우저는 `url(javascript:...)`을 차단하지만, 일부 구버전에서는 작동하기도 했습니다.
+
+---
+
+## ✅ CSP와 DOMPurify에 대한 우회
+
+보통 보안 위험은 \*\*JavaScript 실행(XSS)\*\*을 생각하지만, 최근 보안 정책(CSP, DOMPurify 등) 때문에 **JavaScript가 막히는 경우**가 많습니다. 이때 **CSS만으로도 의도치 않은 동작**을 유도할 수 있습니다.
+
+### ◾ CSP (Content Security Policy)
+
+* CSP는 페이지 내에서 어떤 리소스(JavaScript, 이미지, 스타일 등)를 불러올 수 있는지를 제한하는 **브라우저 보안 정책**입니다.
+* 예: `Content-Security-Policy: script-src 'self'` → 외부 JS 차단
+
+### ◾ DOMPurify
+
+* DOMPurify는 HTML을 \*\*sanitize(정화)\*\*해서 위험한 태그 및 속성 (예: `<script>`, `onerror=...`)을 제거합니다.
+
+### 💡 그러나 DOMPurify는 CSS까지는 완벽히 필터링하지 않음
+
+* 즉, `<style>`이나 `style` 속성 내에 삽입된 **정상적인 CSS 구문**은 살릴 수 있음
+* 이 점을 이용해 악의적인 CSS만으로도 공격 가능
+
+---
+
+### 🧠 CSS Injection 구문
 
 | 선택자 구문          | 설명                                                                            |
 | --------------- | ----------------------------------------------------------------------------- |
@@ -22,7 +73,7 @@
 
 ## 😈 CSS를 이용해 정보를 훔친다고?
 
-그렇습니다. CSS 자체는 **정보를 읽는 기능은 없지만**, **스타일 조건에 따라 외부 요청을 보낼 수는 있어요.**
+CSS 자체는 **정보를 읽는 기능은 없지만**, **스타일 조건에 따라 외부 요청을 보낼 수는 있어요.**
 
 예를 들어:
 
