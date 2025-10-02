@@ -1,3 +1,71 @@
+## 🔁 리다이렉트의 정확한 의미
+
+> **리다이렉트(Redirect)**란,
+> **요청이나 처리를 원래 목적지 대신 다른 위치로 자동 전환하는 것**을 말합니다.
+
+### 🌐 **웹에서의 리다이렉트 (HTTP Redirect)**
+
+* 사용자가 어떤 URL에 접속했을 때,
+  **자동으로 다른 URL로 이동시키는 것**.
+
+#### 예시:
+
+* 사용자가 `http://example.com`으로 접근했을 때,
+  자동으로 `https://www.example.com/home`으로 이동.
+
+#### 사용 목적:
+
+* 도메인 변경
+* HTTPS 전환
+* 모바일/PC 페이지 분기
+* SEO 처리 등
+
+#### HTTP 상태 코드 예:
+
+* **301**: 영구 이동 (검색엔진도 주소를 바꿔 기억함)
+* **302**: 임시 이동 (주소는 유지, 일시적 변경)
+* **307 / 308**: 최신 표준 리다이렉트 코드
+
+한 페이지에서 **도메인이 다른 사이트로 이동**하는 것도 바로 **리다이렉트(redirect)**의 일종입니다.  좀 더 정확하게는 **"외부 도메인으로의 리다이렉트"**라고 할 수 있어요. 
+
+
+## ✅ 도메인이 다른 사이트로 이동하는 리다이렉트란?
+
+> 현재 페이지에서 사용자를 **전혀 다른 도메인 주소로 자동 이동시키는 것**
+
+예를 들어:
+
+* 사용자가 `http://example.com`에 접속했는데
+* 브라우저가 자동으로 `https://another-site.com/login`으로 이동한다면
+  → **이건 리다이렉트 + 도메인 변경**이 포함된 경우예요.
+
+---
+
+### 1. 🧠 HTML 메타 태그로 리다이렉트 (클라이언트 측) 
+
+```html
+<meta http-equiv="refresh" content="0; URL=https://another-site.com" />
+```
+
+* 페이지가 로드되자마자 (0초 후)
+* 자동으로 다른 도메인으로 이동
+
+---
+
+### 2. 🧑‍💻 JavaScript를 통한 리다이렉트 
+
+```javascript
+window.location.href = "https://another-site.com";
+```
+
+또는
+
+```javascript
+location.replace("https://another-site.com");
+```
+
+
+---
 ### ✅ 리다이렉션 취약점이 되려면?
 
 **사용자 입력**(예: `?next=` 파라미터 등)을 통해
@@ -13,8 +81,6 @@ window.location.href = redirect;
 
 * `https://example.com/login?next=https://evil.com`
   → 사용자 클릭 시 악성 사이트로 이동
-
-
 
 
 
