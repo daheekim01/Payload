@@ -11,8 +11,6 @@
 
 * 사용자가 `http://example.com`으로 접근했을 때,
   자동으로 `https://www.example.com/home`으로 이동.
-  
-<br>
 
 ### ✅ 도메인이 다른 사이트로 이동하는 리다이렉트란?
 
@@ -34,7 +32,6 @@
 * 페이지가 로드되자마자 (0초 후)
 * 자동으로 다른 도메인으로 이동
 
----
 
 ### 2. 🧑‍💻 JavaScript를 통한 리다이렉트 
 
@@ -48,8 +45,10 @@ window.location.href = "https://another-site.com";
 location.replace("https://another-site.com");
 ```
 
-
 ---
+  
+<br>
+
 ### ✅ 리다이렉션 취약점이 되려면?
 
 **사용자 입력**(예: `?next=` 파라미터 등)을 통해
