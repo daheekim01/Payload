@@ -11,8 +11,7 @@
 
 * 사용자가 `http://example.com`으로 접근했을 때,
   자동으로 `https://www.example.com/home`으로 이동.
-
-<br>
+  
 <br>
 
 ### ✅ 도메인이 다른 사이트로 이동하는 리다이렉트란?
