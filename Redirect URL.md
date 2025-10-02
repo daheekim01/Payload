@@ -46,7 +46,7 @@ location.replace("https://another-site.com");
 ```
 
 ---
-<br>
+
 ### ✅ 리다이렉션 취약점이 되려면?
 
 **사용자 입력**(예: `?next=` 파라미터 등)을 통해
