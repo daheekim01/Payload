@@ -33,7 +33,7 @@
 * 자동으로 다른 도메인으로 이동
 
 
-### 2. 🧑‍💻 JavaScript를 통한 리다이렉트 
+### 2. 🧑‍💻 JavaScript를 통한 리다이렉트 (URL에 직접 쓸 ❌)
 
 ```javascript
 window.location.href = "https://another-site.com";
@@ -45,6 +45,18 @@ window.location.href = "https://another-site.com";
 location.replace("https://another-site.com");
 ```
 
+#### 우회문 예시
+
+명명(named) 문자 엔티티
+&quot;https&colon;&sol;&sol;www.naver.com&quot;
+
+10진 숫자 엔티티
+&#34;https&#58;&#47;&#47;www&#46;naver&#46;com&#34;
+
+16진 숫자 엔티티
+&#x22;https&#x3A;&#x2F;&#x2F;www&#x2E;naver&#x2E;com&#x22;
+
+<a href="location.replace('https://another-site.com')">Click me</a>
 ---
 
 ### ✅ 리다이렉션 취약점이 되려면?
