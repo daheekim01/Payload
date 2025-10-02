@@ -32,8 +32,6 @@
 
 * <scr<script>ipt>alert(1)</scr</script>ipt>    ← 중첩 태그 사용
 * `<img src="x" onerror=alert(1)>`    ← 태그 속성 활용
-
-공격 우회 구문
 * URL 인코딩: .(%2e), /(%2f), \(%5c)
 * 16bit 유니코드 인코딩: .(%u002e), /(%u2215), \(%u2216)
 * 더블URL 인코딩: .(%252e), /(%252f), \(%255c)
