@@ -213,6 +213,48 @@ SSTI(Server-Side Template Injection)는 서버 측에서 사용하는 템플릿 
 
 ---
 
+### SSTI 페이로드
+
+(1) URL 파라미터(GET)로 주입 — 인코딩/비인코딩 예시
+
+* 디코딩된 형태(읽기 쉬운 형식)
+
+```
+GET /recv_adjust_postback.php?tracker_name=Mobusi::unknown::test#{ 777 * 777 }::0&adgroup_name=test#{ 777 * 777 } HTTP/1.1
+Host: 11.com
+User-Agent: Mozilla/5.0 (example-scan)
+Accept: */*
+```
+
+* URL 인코딩된 형태(실제 로그에 흔함)
+
+```
+GET /recv_adjust_postback.php?tracker_name=Mobusi%3A%3Aunknown%3A%3Atest%23%7B+777+%2A+777+%7D%3A%3A0&adgroup_name=test%23%7B+777+%2A+777+%7D HTTP/1.1
+Host: 11.com
+User-Agent: AttackScanner/1.0
+```
+
+(2) POST 바디로 전달 (application/x-www-form-urlencoded)
+
+```
+POST /submit HTTP/1.1
+Host: example.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 92
+
+name=alice&comment={{777*777}}&tracker=@(777*777)&meta=%7B%7B+777+*+777+%7D%7D
+```
+
+(3) 광고/리포스트(postback) 형식(많이 쓰이는 위장 방식)
+
+```
+GET /recv_adjust_postback.php?app_id=8786990&tracker_name=Mobusi%3A%3Aunknown%3A%3Atest%23%7B+777+%2A+777+%7D&country=jp HTTP/1.1
+Host: 11.com
+Referer: https://ad.network/clk
+User-Agent: curl/7.68.0
+```
+
+---
 ### SSTI 공격 방어 방법
 
 1. **입력 검증**: 템플릿 엔진에 전달되는 모든 사용자 입력을 적절히 검증합니다. (예: HTML, JavaScript 필터링)
