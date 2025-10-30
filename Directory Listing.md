@@ -1,4 +1,5 @@
 ## ✔️ 서버에 존재하는 하위 파일 목록을 볼 수 있는 URL 조작 취약점
+<img width="1266" height="827" alt="image" src="https://github.com/user-attachments/assets/63e50c37-e8b3-4ac6-9fd2-91c4ba7319ac" />
 
 ---
 
