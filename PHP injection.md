@@ -49,6 +49,7 @@
 ##### **RFI (Remote File Inclusion)** 공격
 
 `allow_url_include`가 활성화되어 있으면, 원격 서버에서 파일을 포함시킬 수 있습니다.
+* allow_url_include=1 : PHP 설정이 활성화되면 원격 URL의 include/require가 허용
 
 **URL 예시**:
 
@@ -85,13 +86,7 @@ http://example.com/vulnerable.php?code=system('ls -la'); // 서버 명령어 실
 ```
 GET /api.php?file=example.txt;rm%20-rf%20/
 ```
-
-
-
-
-
-
-
+<br>
 ---
 * 코드(Code) 인젝션서버의 PHP 코드 실행 과정에 공격자의 코드를 삽입시키는 위협으로 가장 많은 공격은 서버에서 수행 코드를 내포시키는 include(), include_once(), require(), require_once() 함수들을 대상으로 해서 자신의 코드가 실행 과정에 반영되도록 하는 것입니다.
 * include ($_GET['id'].".php");위의 사례처럼 웹 입력 자료를 기반으로 이들 함수를 사용한다면 철저한 사전 검사를 해야 합니다.
