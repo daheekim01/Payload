@@ -109,6 +109,7 @@
 | -------------------------- | -------------------------- | --------------------------------------------------------- |
 | `.env`                     | DB 정보, APP\_KEY, SMTP 정보 등 | `?page=../../../../var/www/html/.env`                     |
 | `storage/logs/laravel.log` | 에러 로그 파일 (내부 경로 유출 가능)     | `?page=../../../../var/www/html/storage/logs/laravel.log` |
+| `/_ignition/execute-solution` | facade/ignition(디버깅/에러 페이지) 패키지가 활성화되어 있을 때 노출되는 디버깅용 엔드포인트     | `?page=../_ignition/execute-solution` |
 
 
 ### 📘 WordPress
