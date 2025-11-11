@@ -1,9 +1,97 @@
-## (1)
->URL 뒤에 `<script></script>`를 붙이니까 페이지의 원래 HTML `<script>` 태그 일부가 화면에 노출됨
+### 🐈HTML 본문(context: text)에서 왜 `<script>...</script>` 같은 입력이 그대로 나오면 위험한지
+### 🐈‍⬛HTML 속성(context: attribute)에서 왜 따옴표를 닫는 입력이 위험한지
+
+---
+
+## 1) HTML 본문(context: text) — 기본 원리 (쉽게)
+
+웹페이지에 이렇게 출력한다고 가정합시다:
+
+```html
+<div>검색어: USER_INPUT</div>
+```
+
+여기서 `USER_INPUT`을 사용자가 입력한 값으로 바꿔서 그대로 출력하면(= *이스케이프 없이 반영*) 사용자가 HTML 태그나 스크립트를 삽입할 수 있습니다.
+
+예: 사용자가 `USER_INPUT`에 `<script>alert(1)</script>`를 넣으면 결과 페이지는
+
+```html
+<div>검색어: <script>alert(1)</script></div>
+```
+
+브라우저는 `<script>` 태그를 해석하고 실행합니다. 이게 바로 **Reflected XSS(반사형 XSS)** 의 전형적인 동작입니다 — 공격자가 만든 스크립트가 피해자 브라우저에서 실행됩니다.
+
+
+## 2) HTML 속성(context: attribute) — 따옴표로 속성값을 감싸는 경우
+
+속성 예:
+
+```html
+<input value="USER_INPUT">
+```
+
+문제는 속성값을 감쌀 때 보통 따옴표(`"`)나 작은따옴표(`'`)를 사용한다는 점입니다. 공격자가 속성 안에서 따옴표를 닫아버리고 추가적인 HTML/JS를 삽입하면 상황이 위험해집니다.
+
+예: 공격자가 `USER_INPUT`에 이렇게 넣었다고 해봅시다:
+
+```
+" onfocus="evil()" 
+```
+
+그럼 결과 HTML은 다음과 같습니다:
+
+```html
+<input value="" onfocus="evil()">
+```
+
+원래 의도는 `value`에 단순 텍스트 넣는 것이었지만, 공격자가 `value`를 닫아 `onfocus` 속성을 추가했고, 페이지를 로드한 후 사용자가 해당 입력 요소에 포커스를 주면 `evil()` 함수(공격자가 정의한 스크립트)가 실행될 수 있습니다.
+
+또 다른 자주 쓰이는 페이로드는 `<img src=x onerror=alert(1)>` 처럼 태그 자체를 삽입하는 것입니다. 속성값을 닫고 새로운 태그를 만들거나 기존 태그의 이벤트 속성(event handler)을 조작할 수 있습니다.
+
+### 예시) — 취약한 경우 vs 안전한 경우
+
+취약(무방비):
+
+```php
+$user_input = $_GET['q'];      // 예: q=<script>alert(1)</script>
+echo "<div>검색어: $user_input</div>";
+// 결과: <div>검색어: <script>alert(1)</script></div>
+// -> 스크립트 실행됨
+```
+
+안전(이스케이프 적용):
+
+```php
+$user_input = $_GET['q'];
+$safe = htmlspecialchars($user_input, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+echo "<div>검색어: $safe</div>";
+// 결과: <div>검색어: &lt;script&gt;alert(&quot;1&quot;)&lt;/script&gt;</div>
+// -> 단순 텍스트로 표시, 실행되지 않음
+```
+
+속성 예 — 취약:
+
+```php
+echo '<input value="' . $_GET['q'] . '">';
+// q 값: " onfocus="alert(1)  -> 속성 탈출, XSS 발생 가능
+```
+
+속성 예 — 안전:
+
+```php
+echo '<input value="' . htmlspecialchars($_GET['q'], ENT_QUOTES, 'UTF-8') . '">';
+// 모두 안전하게 이스케이프됨
+```
+
+---
+
+### ✅ HTML 본문(context: text) 예시
+
+> URL 뒤에 `<script></script>`를 붙이니까 페이지의 원래 HTML `<script>` 태그 일부가 화면에 노출됨
 > 페이지 내의 기존 스크립트 일부가 "깨져서" 화면에 나타남
 
 
-🔍삽입한 태그 때문에 브라우저가 DOM을 비정상적으로 파싱하고, 기존 `<script>` 블록이 종료되거나 망가져서 일부 코드가 **화면에 렌더링**
+삽입한 태그 때문에 브라우저가 DOM을 비정상적으로 파싱하고, 기존 `<script>` 블록이 종료되거나 망가져서 일부 코드가 **화면에 렌더링**
 
 ```
 http://example.com/page?name=</script><script>alert(1)</script>
@@ -18,14 +106,13 @@ html
 </script>
 ```
 
-
 * 첫 번째 `</script>`로 기존 `<script>`가 조기 종료
 * 그 뒤의 `<script>alert(1)</script>`가 **브라우저에서 실행**
 * 그 이후 남은 스크립트는 깨진 상태로 렌더링됨 → 그래서 HTML 일부가 "화면에 보이는" 현상이 발생
 
 ---
 
-## ✅  XSS 공격  테스트
+## ✅ XSS 공격  테스트
 
 
 ```url
@@ -46,7 +133,7 @@ http://example.com/page?name=</script><img src=x onerror=alert(1)>
 
 1. \*\*페이지 소스(view-source:)\*\*에서 삽입 위치 확인 (스크립트 블록 안인지, HTML 태그 안인지)
 
-2.
+2. (예시)
 ```
 html
 <script>
@@ -64,16 +151,19 @@ html
 ---
 
 
-## (2)
-## `"unexpected token '<', '<!doctype' is not valid json"` 
+### HTML 응답
+```
+"unexpected token '<', '<!doctype' is not valid json"
+```
 위 오류는 보통 **JavaScript**에서 **JSON 파싱**을 시도할 때, **JSON 응답**이 아닌 **HTML** 형식의 응답(대개 오류 페이지)을 받은 경우 발생. 
 
 
 * **`unexpected token '<'`** 오류 메시지는 **HTML 응답**에서 악성 스크립트를 삽입할 수 있는 기회를 제공
-* ✅ `unexpected token '<'` 오류 발생 시 공격할 수 있는 XSS 페이로드 예시
+
+### ✅ `unexpected token '<'` 오류 발생 시 공격할 수 있는 XSS 페이로드 예시
 
 
-#### 1. **기본적인 XSS 공격**
+1. **기본적인 XSS 공격**
 
 만약 HTML 문서 내에서 `<script>` 태그를 포함시킬 수 있다면, 공격자는 JavaScript 코드를 실행.
 
@@ -83,7 +173,7 @@ html
 
 이 코드는 **브라우저**에서 실행
 
-#### 2. **쿠키 탈취를 위한 XSS 페이로드**
+2. **쿠키 탈취를 위한 XSS 페이로드**
 
 공격자는 악성 스크립트를 사용하여 **쿠키**를 **탈취**. 다음과 같은 XSS 페이로드를 사용:
 
@@ -93,7 +183,7 @@ html
 
 사용자의 **쿠키** 정보를 **attacker.com**으로 전송
 
-#### 3. **DOM-based XSS (DOM을 통한 XSS)**
+3. **DOM-based XSS (DOM을 통한 XSS)**
 
 만약 페이지 내에서 **사용자 입력을 동적으로 처리**하고 그 데이터를 HTML에 삽입한다면, XSS 공격이 발생
 
@@ -106,6 +196,7 @@ html
 
 **이미지 오류**를 유발하여 **`onerror`** 이벤트 핸들러가 \*\*`alert(1)`\*\*을 실행.
 
+---
 
 ### **사용자 입력을 동적으로 처리하는지 확인하는 방법**
 
@@ -142,7 +233,7 @@ html
 
 ---
 
-### **사용자 입력을 HTML에 삽입하는 방법**
+### **🔍 사용자 입력을 HTML에 삽입하는 방법**
 
 
 #### **1. innerHTML을 통한 삽입**
