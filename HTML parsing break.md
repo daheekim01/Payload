@@ -157,8 +157,7 @@ html
 ```
 위 오류는 보통 **JavaScript**에서 **JSON 파싱**을 시도할 때, **JSON 응답**이 아닌 **HTML** 형식의 응답(대개 오류 페이지)을 받은 경우 발생. 
 
-
-* **`unexpected token '<'`** 오류 메시지는 **HTML 응답**에서 악성 스크립트를 삽입할 수 있는 기회를 제공
+**`unexpected token '<'`** 오류 메시지는 **HTML 응답**에서 악성 스크립트를 삽입할 수 있는 기회를 제공
 
 ### ✅ `unexpected token '<'` 오류 발생 시 공격할 수 있는 XSS 페이로드 예시
 
