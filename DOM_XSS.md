@@ -9,6 +9,7 @@
 | `insertAdjacentHTML()`                       | 특정 위치에 HTML 삽입               | 🔥 매우 높음          | `el.insertAdjacentHTML('beforeend', '<svg onload=alert(1)>');` |
 | `dangerouslySetInnerHTML` (React)            | React에서 `innerHTML`을 허용하는 방식 | 🔥 매우 높음          | `<div dangerouslySetInnerHTML={{__html: userInput}} />`        |
 | `jQuery.html()`                              | jQuery의 `innerHTML`과 유사      | 🔥 매우 높음          | `$('#target').html("<script>alert(1)</script>");`              |
+| `Element.outerHTML = `                       |        |          |                       |
 | `Element.setAttribute()`                     | `on*` 이벤트 속성을 동적으로 삽입        | ⚠️ 조건부 위험         | `el.setAttribute("onclick", "alert(1)");`                      |
 | `location.href =` (URL 조작)                   | JS로 리디렉션 시 악용 가능             | ⚠️ 중간             | `location.href = "javascript:alert(1)"` (구형 브라우저 한정)           |
 | `eval()`                                     | 문자열을 코드로 실행                  | ☢️ 치명적 (원천적으로 위험) | `eval("alert(1)")`                                             |
@@ -19,6 +20,7 @@
 ---
 
 ## 📋 XSS 발생 위험이 높은 DOM API & 속성 정리표
+사용자가 제어하는 문자열을 `innerHTML`, `html()`, `insertAdjacentHTML` 등 **HTML로 파싱해서 삽입하면** 스크립트/이벤트 핸들러가 실행될 수 있어 **DOM 기반 XSS**가 발생합니다.
 
 | 🚩 메서드/속성                         | 🔍 설명                                  | 💥 XSS 발생 예시                                                                 | 🧪 필터 우회 예시                                                  |
 | --------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------ |
@@ -199,4 +201,51 @@ location.href = "data:text/html,<script>alert(1)</script>";
 ```
 
 💥 결과: 페이지 이동 후 `alert(1)` 실행
+
+
+---
+
+## 🛸 취약 예시 
+
+### 브라우저 JS (클라이언트) — innerHTML 예
+
+```html
+<!-- userInput은 URL 파라미터 또는 서버 응답에서 온 값 -->
+<div id="profile"></div>
+
+<script>
+  const userInput = location.search.split('name=')[1] || 'Guest';
+  // 위험: userInput을 인코딩하지 않고 HTML로 삽입
+  document.getElementById('profile').innerHTML = `<p>안녕하세요, ${userInput}</p>`;
+</script>
+```
+
+* 공격 시: `?name=<script>alert('XSS')</script>` 같은 값이 들어가면 스크립트가 실행됩니다.
+
+### jQuery .html() 예
+
+```js
+// 서버에서 받아온 사용자 리뷰 텍스트
+$('.reviews').html(response.review); // 위험
+```
+
+### 서버 템플릿(예: PHP)에서 이스케이프 생략
+
+```php
+// 위험: $_GET['q']를 그대로 출력
+echo "<div>검색결과: " . $_GET['q'] . "</div>";
+```
+
+### attribute에 넣는 경우(이벤트 속성)
+
+```html
+<!-- 위험: userLink가 제어되면 javascript: 실행 가능 -->
+<a id="link">클릭</a>
+<script>
+  const userLink = getFromServer(); // 사용자가 제어할 수 있는 값
+  document.getElementById('link').setAttribute('href', userLink);
+</script>
+```
+
+---
 
