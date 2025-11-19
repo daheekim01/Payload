@@ -92,3 +92,107 @@
     ```javascript
     <script>window.postMessage("malicious message", "*");</script>
     ```
+
+
+---
+
+## ✨ 괄호 없이 사용 가능한 이벤트 핸들러와 내장 함수들
+
+### 1️⃣ **이벤트 핸들러 (Event Handlers)**
+
+자바스크립트 이벤트 핸들러는 **함수 호출 시 괄호 없이 지정할 수 있습니다**.
+이벤트가 발생할 때, 해당 핸들러가 실행되도록 설정되기 때문입니다.
+
+#### 예시:
+
+```html
+<button onclick="alert('Hello World!')">Click Me</button>
+```
+
+* 여기서 `alert()` 함수는 괄호 없이 `onclick` 속성에 바로 작성되었어요.
+* 이벤트가 발생하면 브라우저가 자동으로 해당 함수를 호출합니다.
+
+#### 다양한 이벤트 속성 (이벤트 핸들러)
+
+* `onclick`: 클릭 이벤트
+* `onmouseover`: 마우스가 요소 위로 올라갔을 때
+* `onmouseout`: 마우스가 요소를 벗어났을 때
+* `onkeydown`: 키보드 키를 눌렀을 때
+* `onchange`: 폼 필드 값이 변경될 때
+* `onfocus`: 포커스가 해당 요소에 갔을 때
+* `onblur`: 포커스가 해당 요소를 떠났을 때
+
+#### 예시 2: `onmouseover` (괄호 없이 사용)
+
+```html
+<button onmouseover="this.style.backgroundColor='yellow'">Hover over me</button>
+```
+
+* 마우스가 버튼 위로 올라갈 때 배경색이 `yellow`로 바뀝니다.
+  이때 `this.style.backgroundColor='yellow'`는 괄호 없이 이벤트 속성에 지정된 상태로 처리됩니다.
+
+---
+
+### 2️⃣ **특수한 자바스크립트 함수**
+
+일부 내장 함수들은 **브라우저가 자동으로 특정 동작을 실행**할 때, 괄호 없이 사용할 수 있습니다. 대표적으로 **DOM 관련 메서드**에서 발생할 수 있습니다.
+
+#### 예시:
+
+```html
+<button onClick="console.log('Button clicked')">Click me</button>
+```
+
+* `onClick` 속성에서 `console.log()`는 괄호 없이 사용할 수 있지만, 실제로는 실행될 때 브라우저가 자동으로 괄호를 처리해줍니다.
+
+---
+
+### 3️⃣ **`this`와 관련된 함수**
+
+`this` 키워드가 사용된 함수에서는 괄호 없이도 참조할 수 있는 경우가 많습니다. `this`가 **자동으로 특정 객체를 참조**하도록 설정되는 경우가 그렇죠.
+
+#### 예시:
+
+```html
+<button onClick="this.innerHTML = 'Clicked!'">Click Me</button>
+```
+
+* 이 예시에서 `this`는 버튼 자체를 참조하고, 클릭할 때마다 버튼의 `innerHTML`을 `Clicked!`로 변경합니다.
+* `this.innerHTML = 'Clicked!'`는 괄호 없이 `this`를 참조하여 DOM 요소를 변경합니다.
+
+---
+
+### 4️⃣ **자주 쓰이는 기본 자바스크립트 함수 (자동 호출 가능)**
+
+* **`alert()`**: 사용자에게 경고 메시지 박스를 띄움
+* **`confirm()`**: 확인/취소 버튼이 있는 팝업을 띄워 사용자의 응답을 받음
+* **`prompt()`**: 사용자에게 텍스트 입력을 받을 수 있는 팝업을 띄움
+
+### 예시:
+
+```html
+<button onclick="alert('Hello World!')">Show Alert</button>
+<button onclick="confirm('Are you sure?')">Show Confirm</button>
+<button onclick="prompt('Enter your name:')">Show Prompt</button>
+```
+
+* 위의 예시에서 `alert`, `confirm`, `prompt` 함수들은 **자바스크립트에서 직접 호출하지 않고, 이벤트가 발생했을 때 자동으로 실행**됩니다.
+
+---
+
+### 5️⃣ **브라우저의 내장 객체나 메서드**
+
+브라우저의 내장 객체 중에서도 **일부 메서드**는 괄호 없이도 자동으로 실행될 수 있는 경우가 많습니다. 예를 들어 `setTimeout` 같은 것들입니다.
+
+#### 예시:
+
+```html
+<button onClick="setTimeout('alert(\'Hello\')', 1000)">Click Me</button>
+```
+
+* `setTimeout()`은 시간 지연 후 특정 함수를 실행하도록 하지만, 이때도 함수명만 사용하면 **괄호 없이** 동작합니다. 그러나 권장되는 방법은 **함수를 직접 전달**하는 것입니다.
+
+---
+
+
+
