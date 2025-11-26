@@ -120,6 +120,7 @@
 | `.htaccess`     | 리다이렉션, 보안 설정 등 포함 | `?page=../../../../var/www/html/.htaccess`     |
 | `/config.php.zip`                      | 압축된 설정 파일, 내부 PHP 코드 포함 가능                           | `?page=../../../../var/www/html/config.php.zip`                |
 | `/wp-config.php.bk`                    | WordPress 백업 설정 파일, DB 정보 포함                         | `?page=../../../../var/www/html/wp-config.php.bk`              |
+| `/.wp-config.php.swp`                    | Vim 에디터가 만든 스왑 파일(.swp)으로 .wp-config.php 가 열려 있을 때 자동 생성돼 DB 계정·비밀번호·AUTH_KEY·SECURE_AUTH_KEY 등이 그대로 노출    | `CVE-2017-17087`     |
 
 > 참고: PHP에서는 소스코드가 실행되어 내용을 볼 수 없지만, `php://filter` 사용 시 Base64로 출력 가능
 
